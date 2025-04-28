@@ -29,7 +29,7 @@ export async function handler(event) {
       console.log(`[${requestId}] 未找到对应记录`);
       return {
         statusCode: 404,
-        headers: { Location: 404.html }
+        body: 'Not Found'
       };
     }
 
@@ -93,7 +93,7 @@ export async function handler(event) {
       console.error(`[${requestId}] 二维码生成失败:`, qrError);
       return {
         statusCode: 404,
-        headers: { Location: 404.html }
+        body: 'Not Found'
       };
     }
 
