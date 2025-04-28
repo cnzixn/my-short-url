@@ -22,7 +22,7 @@
             try {
               const response = await fetch('/.netlify/functions/create', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' }, // 必须添加请求头
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ url })
               });
           
@@ -30,16 +30,26 @@
                 throw new Error(`HTTP error! status: ${response.status}`);
               }
           
-              const data = await response.json(); // 先获取完整数据对象
+              const data = await response.json();
               
               if (!data.key) {
                 throw new Error('后端未返回有效的短链标识');
               }
           
-              const shortUrl = `${window.location.origin}/x/${data.key}`;
+              const shortUrl = `${window.location.origin}/s/${data.key}`;
               document.getElementById('result').innerHTML = `
                 生成的短链接：<a href="${shortUrl}">${shortUrl}</a>
+                <button id="copyButton">复制</button>
               `;
+          
+              // 复制按钮点击事件
+              document.getElementById('copyButton').addEventListener('click', () => {
+                navigator.clipboard.writeText(shortUrl).then(() => {
+                  alert('短链接已复制到剪贴板！');
+                }).catch((err) => {
+                  console.error('复制失败:', err);
+                });
+              });
           
             } catch (error) {
               console.error('生成失败:', error);
@@ -48,7 +58,6 @@
               `;
             }
         });
-
     </script>
 </body>
 </html>

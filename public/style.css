@@ -1,25 +1,148 @@
+/* 基本样式 */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
+    background: linear-gradient(135deg, #f4f4f4, #d6e1f0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: #333;
 }
 
+/* 核心容器 */
 .container {
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    padding: 25px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 100%;
+    max-width: 600px;
 }
 
+/* 标题 */
+h1 {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+/* 输入框 */
 input[type="url"] {
     width: 70%;
-    padding: 8px;
+    padding: 12px;
     margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
 }
 
+input[type="url"]:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* 按钮 */
 button {
-    padding: 8px 20px;
-    background: #007bff;
+    padding: 12px 25px;
+    background-color: #007bff;
     color: white;
     border: none;
+    border-radius: 8px;
     cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.2s;
+}
+
+button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+button:active {
+    background-color: #004085;
+}
+
+/* 响应式设计：适配手机设备 */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        width: 100%;
+        padding: 15px;
+    }
+
+    input[type="url"] {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        font-size: 18px;
+    }
+}
+
+/* 响应式设计：适配非常小的手机屏幕 */
+@media (max-width: 480px) {
+    input[type="url"] {
+        font-size: 14px;
+    }
+
+    button {
+        font-size: 16px;
+    }
+}
+
+/* 结果显示样式 */
+#result {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #333;
+}
+
+.result-link {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.result-link:hover {
+    text-decoration: underline;
+}
+
+/* 错误提示 */
+.error {
+    color: red;
+    font-size: 16px;
+}
+
+/* 复制按钮样式 */
+#copyButton {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.2s;
+}
+
+#copyButton:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+}
+
+#copyButton:active {
+    background-color: #1e7e34;
 }
