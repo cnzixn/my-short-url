@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>短链生成器</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
@@ -12,12 +12,12 @@
         <form id="form">
             <!-- 第一行：输入框 + 生成按钮 -->
             <div class="input-group">
-                <input type="url" id="url" required placeholder="输入长链接">
+                <input type="url" id="url" required placeholder="请输入链接">
                 <button type="submit" id="generateButton">生成</button>
             </div>
             <!-- 第二行：生成的短链接输入框 + 复制按钮 -->
             <div class="input-group">
-                <input type="text" id="shortUrl" readonly placeholder="生成的短链接" />
+                <input type="text" id="shortUrl" readonly placeholder="生成的链接" />
                 <button type="button" id="copyButton">复制</button>
             </div>
         </form>

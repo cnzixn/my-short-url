@@ -55,16 +55,16 @@ h1 {
 }
 
 #verify-password {
-    padding: 14px 24px;
+    padding: 12px;
     background-color: #0099ff;
     color: white;
     border: none;
     border-radius: 8px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s, box-shadow 0.3s ease; /* 添加过渡效果 */
+    font-size: 1rem;
     width: 70%;
     max-width: 300px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s, box-shadow 0.3s ease; /* 添加过渡效果 */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* 添加轻微阴影 */
 }
 
@@ -135,8 +135,8 @@ button.delete:active {
 }
 
 /* 新增的复制、生成按钮样式 */
-button.copy,
-button.generate {
+#copyButton,
+#generateButton {
     padding: 12px 20px;
     border: none;
     border-radius: 8px;
@@ -146,23 +146,23 @@ button.generate {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-button.copy {
+#copyButton {
     background-color: #6c757d;
     color: white;
 }
 
-button.copy:hover {
+#copyButton:hover {
     background-color: #5a6268;
     transform: scale(1.05);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-button.generate {
+#generateButton {
     background-color: #28a745;
     color: white;
 }
 
-button.generate:hover {
+#generateButton:hover {
     background-color: #218838;
     transform: scale(1.05);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -185,17 +185,26 @@ button.generate:hover {
     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
 }
 
+/* 输入组样式，用于包裹输入框和按钮的组合 */
+.input-group {
+    display: flex;
+    align-items: center; /* 垂直居中对齐 */
+    margin-bottom: 15px;
+}
+
+.input-group input {
+    flex: 1; /* 输入框占满剩余空间 */
+    margin-right: 10px; /* 在输入框和按钮之间添加间距 */
+}
+
 /* 响应式设计：适配手机设备 */
 @media (max-width: 768px) {
     #admin-password {
-        width: 90%;
-        max-width: none;
+        width: 80%;
     }
 
     #verify-password {
-        width: 90%;
-        padding: 14px;
-        font-size: 1.1rem;
+        width: 88%;
     }
 
     #shortlinks-section {
@@ -213,15 +222,20 @@ button.generate:hover {
         padding: 4px 10px;
     }
 
-    button.copy,
-    button.generate {
-        width: 90%;
-        padding: 12px;
-        font-size: 1rem;
+    #copyButton,
+    #generateButton {
+        /* 这里适当减小按钮在手机端的内边距，以确保能和输入框在一行 */
+        padding: 10px 16px; 
+        width: auto; /* 让按钮宽度根据内容自适应 */
     }
 
     #url,
     #shortUrl {
         width: 100%;
+    }
+
+   .input-group {
+        /* 适当减小输入组的底部间距 */
+        margin-bottom: 10px; 
     }
 }
