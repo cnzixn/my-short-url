@@ -61,8 +61,7 @@ h1 {
     border: none;
     border-radius: 8px;
     font-size: 1rem;
-    width: 70%;
-    max-width: 300px;
+    width: auto;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s, box-shadow 0.3s ease; /* 添加过渡效果 */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* 添加轻微阴影 */
@@ -204,7 +203,7 @@ button.delete:active {
     }
 
     #verify-password {
-        width: 88%;
+        width: auto;
     }
 
     #shortlinks-section {
