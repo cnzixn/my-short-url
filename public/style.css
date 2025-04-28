@@ -1,331 +1,171 @@
-/* 全局样式 */
+/* 全局变量 */
+:root {
+  --primary: #007bff;
+  --secondary: #6c757d;
+  --success: #28a745;
+  --error: #dc3545;
+  --light: #f8f9fa;
+  --dark: #343a40;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
 
-
+/* 基础样式 */
 body {
-    font-family: 'Arial', sans-serif;
-    background: #f0f4f8;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    color: #333;
-    overflow-x: hidden;
+  font-family: 'Arial', sans-serif;
+  background: #f0f4f8;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  color: #333;
+  overflow-x: hidden;
 }
 
 .container {
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 900px;
-    text-align: center;
-    box-sizing: border-box;
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  width: 100%;
+  max-width: 900px;
+  text-align: center;
+  box-sizing: border-box;
 }
 
-h1 {
-    font-size: 2rem;
-    color: #333;
-    margin-bottom: 20px;
+/* 通用组件 */
+.button {
+  display: inline-block;
+  padding: 12px 28px;
+  background-color: var(--primary);
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
 
-#password-section {
-    margin-bottom: 20px;
+.button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
 }
 
-#admin-password {
-    padding: 12px;
-    font-size: 1rem;
-    width: 70%;
-    max-width: 300px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    outline: none;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+/* 表单元素 */
+input[type="text"],
+input[type="password"] {
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-#admin-password:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
 }
 
-#verify-password {
-    padding: 12px;
-    background-color: #0099ff;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    width: auto;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s, box-shadow 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-#verify-password:hover {
-    background-color: #007acc;
-    transform: scale(1.05);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-#error-message {
-    color: red;
-    font-size: 0.9rem;
-    display: none;
-}
-
-#shortlinks-section {
-    margin-top: 20px;
-    width: 100%;
-    overflow-x: auto;
-}
-
+/* 表格样式 */
 #shortlinks-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    table-layout: auto;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  table-layout: auto;
 }
 
 #shortlinks-table th,
 #shortlinks-table td {
-    padding: 12px;
-    border: 1px solid #ccc;
-    text-align: left;
-    word-wrap: break-word;
-    max-width: 250px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  text-align: left;
+  word-wrap: break-word;
+  max-width: 250px;
 }
 
 #shortlinks-table th {
-    background-color: #f4f4f4;
-    font-weight: bold;
+  background-color: #f4f4f4;
+  font-weight: bold;
 }
 
-#shortlinks-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-#shortlinks-table tr:hover {
-    background-color: #f1f1f1;
-}
-
-button.delete {
-    padding: 6px 12px;
-    background-color: #ff6666;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-}
-
-button.delete:hover {
-    background-color: #ff4d4d;
-}
-
-button.delete:active {
-    background-color: #ff3333;
-}
-
-#copyButton,
-#generateButton {
-    padding: 12px 20px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s, box-shadow 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-#copyButton {
-    background-color: #6c757d;
-    color: white;
-}
-
-#copyButton:hover {
-    background-color: #5a6268;
-    transform: scale(1.05);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-#generateButton {
-    background-color: #28a745;
-    color: white;
-}
-
-#generateButton:hover {
-    background-color: #218838;
-    transform: scale(1.05);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-#url,
-#shortUrl {
-    padding: 12px;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    outline: none;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-#url:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
-}
-
-.input-group {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.input-group input {
-    flex: 1;
-    margin-right: 10px;
-}
-
-@media (max-width: 768px) {
-    #admin-password {
-        width: 80%;
-    }
-
-    #verify-password {
-        width: auto;
-    }
-
-    #shortlinks-section {
-        width: 100%;
-        overflow-x: auto;
-    }
-
-    #shortlinks-table th,
-    #shortlinks-table td {
-        padding: 8px;
-        font-size: 0.9rem;
-    }
-
-    button.delete {
-        font-size: 0.9rem;
-        padding: 4px 10px;
-    }
-
-    #copyButton,
-    #generateButton {
-        padding: 10px 16px;
-        width: auto;
-    }
-
-    #url,
-    #shortUrl {
-        width: 100%;
-    }
-
-   .input-group {
-        margin-bottom: 10px;
-    }
-}
-
-
-
-
-
-
-/* 新增的二维码页面相关样式 */
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-/* 状态文本样式 */
-#statusText {
-    font-size: 18px;
-    color: #333;
-    margin-bottom: 20px;
-}
-
-/* 内容区域样式 */
-#content {
-    margin-top: 20px;
-}
-
-/* 二维码图片样式 */
+/* 二维码页面专用 */
 #qrImage {
-    display: block; /* 使图片转换为块级元素 */
-    margin: 0 auto 10px; /* 上下外边距为 0，左右外边距自动，实现水平居中 */
-    max-width: 100%; /* 确保图片不会超出父元素宽度 */
-    height: auto; /* 保持图片的宽高比 */
+  display: block;
+  margin: 20px auto;
+  max-width: 300px;
+  height: auto;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
 }
 
-/* 新增的提示信息样式 */
+#qrImage:hover {
+  transform: scale(1.03);
+}
+
 #scan-tip {
-    font-size: 14px;
-    color: #777;
-    margin-bottom: 10px;
-    text-align: center; /* 让提示文字水平居中 */
+  font-size: 1.1rem;
+  color: var(--dark);
+  margin: 1.5rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
-/* 目标链接样式 */
-#targetLink {
-    color: #3498db;
-    text-decoration: none;
+#scan-tip::before {
+  content: "👉";
+  animation: point 1.5s ease-in-out infinite;
 }
 
-#targetLink:hover {
-    text-decoration: underline;
+/* 动画定义 */
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
+@keyframes point {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(5px); }
+}
 
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
+    margin: 10px;
+  }
 
+  #qrImage {
+    max-width: 250px;
+  }
 
+  #shortlinks-table th,
+  #shortlinks-table td {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+}
 
+@media (max-width: 480px) {
+  #scan-tip {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  #scan-tip::before {
+    display: none;
+  }
+}
 
-
-
-/* 404页面样式 */
+/* 404页面 */
 .error-code {
-    font-size: 8rem;
-    color: #ccc;
-    margin-bottom: 20px;
-}
-
-.message {
-    font-size: 2rem;
-    margin-bottom: 30px;
-}
-
-.actions {
-    margin-bottom: 30px;
-}
-
-.button {
-    display: inline-block;
-    padding: 12px 28px;
-    background-color: #007bff;
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    transition: background-color 0.3s ease;
-}
-
-.button:hover {
-    background-color: #0056b3;
+  font-size: 8rem;
+  color: #ccc;
+  margin-bottom: 20px;
 }
 
 .note {
-    font-size: 0.9rem;
-    color: #777;
+  font-size: 0.9rem;
+  color: #777;
 }
