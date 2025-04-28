@@ -55,7 +55,7 @@ async function loadShortlinks() {
             row.insertCell(0).appendChild(deleteButton); // 索引 0：删除按钮
             row.insertCell(1).textContent = `${window.location.origin}/${link.key}`; // 索引 1：短链
             row.insertCell(2).textContent = link.url; // 索引 2：原始 URL
-            row.insertCell(3).textContent = link.clicks; // 索引 3：点击次数
+            row.insertCell(3).textContent = link.clicks.toString(); // 索引 3：点击次数
 
         });
     } catch (error) {
