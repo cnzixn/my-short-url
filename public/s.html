@@ -11,8 +11,9 @@
         <div class="loader"></div>
         <p id="statusText">正在加载链接...</p>
         <div id="content" style="display: none;">
+            <p id="scan-tip">请使用手机浏览器扫码</p> <!-- 新增的提示信息 -->
             <img id="qrImage" width="300" alt="QR Code">
-            <p>或直接访问：<a id="targetLink" target="_blank"></a></p>
+            <a id="targetLink" target="_blank"></a>
         </div>
     </div>
 
@@ -64,8 +65,8 @@
                 document.getElementById('statusText').style.display = 'none';
                 document.getElementById('content').style.display = 'block';
                 document.getElementById('qrImage').src = data.qrCode;
-                document.getElementById('targetLink').href = data.url;
-                document.getElementById('targetLink').textContent = data.url;
+                // document.getElementById('targetLink').href = data.url;
+                // document.getElementById('targetLink').textContent = data.url;
 
             } catch (error) {
                 showError(error.message.includes('404') ? '链接不存在' : '加载失败');
