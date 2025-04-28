@@ -18,6 +18,13 @@ export async function connectToDatabase() {
     // 连接数据库
     await client.connect();
     const db = client.db('shortener'); // 替换为实际数据库名
+    await db.collection('links').createIndex(
+      { createdAt: 1 },
+      // { expireAfterSeconds: 3 * 24 * 60 * 60 },
+      { expireAfterSeconds: 1 * 1 * 5 * 60 },
+      // 添加容错处理（如果索引已存在）
+      { createIndexes: true, checkKeys: false }
+    );
     return { db, client };
   } catch (error) {
     console.error('数据库连接失败:', error.stack);
@@ -25,3 +32,4 @@ export async function connectToDatabase() {
     throw error;
   }
 }
+
