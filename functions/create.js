@@ -1,9 +1,10 @@
 import { connectToDatabase } from '../utils/db';
-import { nanoid } from 'nanoid';
+import { customAlphabet } from "nanoid";
 
 // 短链生成配置
 const KEY_LENGTH = 6;
 const MAX_RETRIES = 3;
+const CUSTOM_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789";
 
 export async function handler(event) {
   const requestId = event.headers['x-nf-request-id'] || 'local-dev';
@@ -77,13 +78,15 @@ export async function handler(event) {
     }
 
     // 生成唯一短码
+    let generateKey;
     let key;
     let retries = 0;
     let inserted = false;
 
     while (retries < MAX_RETRIES && !inserted) {
-      key = nanoid(KEY_LENGTH);
-      
+      generateKey = customAlphabet(CUSTOM_CHARS, KEY_LENGTH);
+      key = generateKey(); // 示例：`a3b9c8`
+
       try {
         await db.collection('links').insertOne({
           key,
