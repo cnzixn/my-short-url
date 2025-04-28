@@ -5,13 +5,6 @@
 # netlify.toml 配置文件
 [[redirects]]
   from = "/:key"
-  to = "/s/:key"  # 重定向到带路径参数的URL
+  to = "/.netlify/functions/redirect/:key"
   status = 302
-  force = true
-
-[[redirects]]
-  from = "/s/*"   # 捕获所有/s/路径的请求
-  to = "/s.html"   # 指向实际文件
-  status = 200     # 重要！保持URL不变
-  force = true
 
