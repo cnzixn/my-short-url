@@ -38,7 +38,7 @@ h1 {
 
 /* 输入框 */
 input[type="url"], input[type="text"] {
-    width: 100%;
+    width: 70%;
     padding: 12px;
     border: 1px solid #ccc;
     border-radius: 8px;
@@ -62,13 +62,16 @@ button {
     font-size: 16px;
     transition: background-color 0.3s ease, transform 0.2s;
     margin-left: 10px;
+    width: 25%;
 }
 
+/* 禁用按钮 */
 button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
 }
 
+/* 按钮：鼠标悬停、点击效果 */
 button:hover {
     background-color: #0056b3;
     transform: scale(1.05);
@@ -94,8 +97,8 @@ button:active {
 
 /* 复制按钮样式 */
 #copyButton {
-    margin-top: 10px;
-    padding: 10px 20px;
+    margin-left: 10px;
+    padding: 12px 25px;
     background-color: #28a745;
     color: white;
     border: none;
@@ -103,7 +106,7 @@ button:active {
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s ease, transform 0.2s;
-    width: 100%;
+    width: 25%;
 }
 
 #copyButton:hover {
@@ -129,6 +132,16 @@ button:active {
     input[type="url"], input[type="text"], button {
         width: 100%;
         margin-bottom: 10px;
+    }
+
+    button {
+        width: 48%;
+        margin-left: 0;
+    }
+
+    #copyButton {
+        width: 48%;
+        margin-left: 0;
     }
 }
 

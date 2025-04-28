@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>短链生成器</title>
     <link rel="stylesheet" href="/style.css">
 </head>
@@ -8,12 +10,15 @@
     <div class="container">
         <h1>短链生成器</h1>
         <form id="form">
+            <!-- 第一行：输入框 + 生成按钮 -->
             <div class="input-group">
                 <input type="url" id="url" required placeholder="输入长链接">
+                <button type="submit" id="generateButton">生成</button>
             </div>
+            <!-- 第二行：生成的短链接输入框 + 复制按钮 -->
             <div class="input-group">
                 <input type="text" id="shortUrl" readonly placeholder="生成的短链接" />
-                <button type="submit" id="generateButton">生成</button>
+                <button type="button" id="copyButton" style="display:none;">复制</button>
             </div>
         </form>
         <div id="result"></div>
@@ -24,6 +29,7 @@
             e.preventDefault();
             const url = document.getElementById('url').value;
             const generateButton = document.getElementById('generateButton');
+            const copyButton = document.getElementById('copyButton');
             
             // 禁用“生成”按钮
             generateButton.disabled = true;
@@ -48,12 +54,10 @@
           
               const shortUrl = `${window.location.origin}/s/${data.key}`;
               document.getElementById('shortUrl').value = shortUrl;
-              document.getElementById('result').innerHTML = `
-                <button id="copyButton">复制</button>
-              `;
+              document.getElementById('copyButton').style.display = 'inline-block';
           
               // 复制按钮点击事件
-              document.getElementById('copyButton').addEventListener('click', () => {
+              copyButton.addEventListener('click', () => {
                 navigator.clipboard.writeText(shortUrl).then(() => {
                   alert('短链接已复制到剪贴板！');
                 }).catch((err) => {
