@@ -121,8 +121,8 @@ export const handler = async (event) => {
     };
   } finally {
     // 确保关闭数据库连接
-    if (client && client.isConnected()) {
-      await client.close();
+    if (client) {
+      await client.close(); // MongoDB 4.x 不需要检查 isConnected()
     }
   }
 };

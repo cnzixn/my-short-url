@@ -1,8 +1,6 @@
 import { MongoClient } from 'mongodb';
 
 const connectionOptions = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
   connectTimeoutMS: 5000,
   serverSelectionTimeoutMS: 5000,
 };
@@ -17,6 +15,7 @@ export async function connectToDatabase() {
   const client = new MongoClient(uri, connectionOptions);
 
   try {
+    // 连接数据库
     await client.connect();
     const db = client.db('shortener'); // 替换为实际数据库名
     return { db, client };

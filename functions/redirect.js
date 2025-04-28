@@ -8,19 +8,21 @@ export async function handler(event) {
   const requestId = event.headers['x-nf-request-id'] || 'local-dev';
   console.log(`[${requestId}] 开始处理请求`);
 
+  let client;
+
   try {
     const key = event.path.split('/')[1];
     console.log(`[${requestId}] 短码: ${key}`);
 
     // 连接数据库
-    const { db, client } = await connectToDatabase();
+    const { db, client: dbClient } = await connectToDatabase();
+    client = dbClient;
     console.log(`[${requestId}] 数据库已连接`);
 
     // 查询数据库
     const collection = db.collection('links');
     const doc = await collection.findOne({ key });
     if (!doc) {
-      client.close();
       console.log(`[${requestId}] 未找到对应记录`);
       return { statusCode: 404 };
     }
@@ -29,9 +31,6 @@ export async function handler(event) {
     const userAgent = event.headers['user-agent'] || '';
     const isMobile = MOBILE_REGEX.test(userAgent);
     console.log(`[${requestId}] 设备类型: ${isMobile ? '移动端' : '桌面端'}`);
-
-    // 关闭数据库连接
-    client.close();
 
     // 移动端跳转
     if (isMobile) {
@@ -75,9 +74,15 @@ export async function handler(event) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         error: "INTERNAL_SERVER_ERROR",
-        requestId: requestId,
+        requestId,
         timestamp: new Date().toISOString()
       })
     };
+  } finally {
+    // 确保关闭数据库连接
+    if (client) {
+      await client.close();
+      console.log(`[${requestId}] 数据库连接已关闭`);
+    }
   }
 }
