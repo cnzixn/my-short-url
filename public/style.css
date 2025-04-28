@@ -47,6 +47,19 @@ input[type="url"]:focus {
     outline: none;
 }
 
+/* 短链接显示框（只读） */
+#shortLink {
+    width: 70%;
+    padding: 12px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: #f4f4f4;
+    cursor: not-allowed;
+    text-align: center;
+}
+
 /* 按钮 */
 button {
     padding: 12px 25px;
@@ -79,7 +92,7 @@ button:active {
         padding: 15px;
     }
 
-    input[type="url"] {
+    input[type="url"], #shortLink {
         width: 100%;
         margin-bottom: 10px;
     }
@@ -93,7 +106,7 @@ button:active {
 
 /* 响应式设计：适配非常小的手机屏幕 */
 @media (max-width: 480px) {
-    input[type="url"] {
+    input[type="url"], #shortLink {
         font-size: 14px;
     }
 
@@ -145,4 +158,16 @@ button:active {
 
 #copyButton:active {
     background-color: #1e7e34;
+}
+
+/* 按钮对齐 */
+.input-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.input-group button {
+    width: 48%;
 }
