@@ -1,31 +1,34 @@
 import { nanoid } from 'nanoid';
 import { connectToDatabase } from '../utils/db';
 
-export async function handler(event) {
+exports.handler = async (event) => {
   try {
+    // 解析请求体
     const { url } = JSON.parse(event.body);
-    const { db, client } = await connectToDatabase();
     
-    // 生成唯一短码
-    const key = nanoid(8);
-    const collection = db.collection('links');
-    
-    await collection.insertOne({
-      key,
-      url,
-      createdAt: new Date(),
-    });
+    if (!url) {
+      return { 
+        statusCode: 400, 
+        body: JSON.stringify({ error: "缺少URL参数" }) 
+      };
+    }
 
-    client.close();
+    // 生成唯一key（示例使用 nanoid）
+    const { nanoid } = await import('nanoid');
+    const key = nanoid(6);
+
+    // 此处应添加数据库存储逻辑
     
     return {
       statusCode: 200,
-      body: JSON.stringify({ key })
+      body: JSON.stringify({ key }) // 确保返回正确的数据结构
     };
-  } catch (err) {
+
+  } catch (error) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: '生成失败' })
+      body: JSON.stringify({ error: "服务器内部错误" })
     };
   }
-}
+};
+

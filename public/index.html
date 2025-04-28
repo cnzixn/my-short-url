@@ -19,18 +19,36 @@
             e.preventDefault();
             const url = document.getElementById('url').value;
             
-            const response = await fetch('/.netlify/functions/create', {
+            try {
+              const response = await fetch('/.netlify/functions/create', {
                 method: 'POST',
+                headers: { 'Content-Type': 'application/json' }, // 必须添加请求头
                 body: JSON.stringify({ url })
-            });
-            
-            const { key } = await response.json();
-            const shortUrl = `${window.location.origin}/${key}`;
-            
-            document.getElementById('result').innerHTML = `
+              });
+          
+              if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+              }
+          
+              const data = await response.json(); // 先获取完整数据对象
+              
+              if (!data.key) {
+                throw new Error('后端未返回有效的短链标识');
+              }
+          
+              const shortUrl = `${window.location.origin}/${data.key}`;
+              document.getElementById('result').innerHTML = `
                 生成的短链接：<a href="${shortUrl}">${shortUrl}</a>
-            `;
+              `;
+          
+            } catch (error) {
+              console.error('生成失败:', error);
+              document.getElementById('result').innerHTML = `
+                <div class="error">错误：${error.message}</div>
+              `;
+            }
         });
+
     </script>
 </body>
 </html>
