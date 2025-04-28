@@ -38,15 +38,15 @@ async function loadShortlinks() {
         data.shortlinks.forEach(link => {
             const row = tableBody.insertRow();
 
-            row.insertCell(0).textContent = `${window.location.origin}/s/${link.key}`;
-            // row.insertCell(0).textContent = `${link.key}`;
-
-            row.insertCell(1).textContent = link.url;
-
             const deleteButton = document.createElement('button');
             deleteButton.textContent = '删除';
             deleteButton.addEventListener('click', () => deleteLink(link.key));
-            row.insertCell(2).appendChild(deleteButton);
+            row.insertCell(0).appendChild(deleteButton);
+
+            row.insertCell(1).textContent = `${window.location.origin}/s/${link.key}`;
+            // row.insertCell(0).textContent = `${link.key}`;
+
+            row.insertCell(2).textContent = link.url;
         });
     } catch (error) {
         console.error('加载短链列表失败:', error);
