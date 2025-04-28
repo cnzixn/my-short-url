@@ -1,3 +1,9 @@
+// 尝试从 localStorage 中获取密码
+const storedPassword = localStorage.getItem('adminPassword');
+if (storedPassword) {
+    document.getElementById('admin-password').value = storedPassword;
+}
+
 // 管理员密码验证
 document.getElementById('verify-password').addEventListener('click', async () => {
     const password = document.getElementById('admin-password').value;
@@ -16,6 +22,8 @@ document.getElementById('verify-password').addEventListener('click', async () =>
 
         const data = await response.json();
         if (data.success) {
+            // 验证成功后，将密码存储到 localStorage
+            localStorage.setItem('adminPassword', password);
             document.getElementById('password-section').style.display = 'none';
             document.getElementById('shortlinks-section').style.display = 'block';
             loadShortlinks();
@@ -55,13 +63,13 @@ async function loadShortlinks() {
 
 // 删除短链
 async function deleteLink(key) {
-    const password = prompt("请输入管理员密码以确认删除:");
-    if (password) {
+    const storedPassword = localStorage.getItem('adminPassword');
+    if (storedPassword) {
         try {
             const response = await fetch('/.netlify/functions/deleteShortlink', {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ password, key })
+                body: JSON.stringify({ password: storedPassword, key })
             });
 
             const data = await response.json();
@@ -73,6 +81,27 @@ async function deleteLink(key) {
             }
         } catch (error) {
             console.error('删除短链失败:', error);
+        }
+    } else {
+        const password = prompt("请输入管理员密码以确认删除:");
+        if (password) {
+            try {
+                const response = await fetch('/.netlify/functions/deleteShortlink', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password, key })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert('短链接已删除');
+                    location.reload();
+                } else {
+                    alert(data.error || '删除失败');
+                }
+            } catch (error) {
+                console.error('删除短链失败:', error);
+            }
         }
     }
 }
