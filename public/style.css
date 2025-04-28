@@ -9,6 +9,7 @@ body {
     align-items: center;
     height: 100vh;
     color: #333;
+    overflow-x: hidden;
 }
 
 /* 容器样式 */
@@ -18,8 +19,9 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 800px;
+    max-width: 900px; /* 容器最大宽度设置为 900px */
     text-align: center;
+    box-sizing: border-box;
 }
 
 /* 标题 */
@@ -75,6 +77,8 @@ h1 {
 /* 短链列表部分 */
 #shortlinks-section {
     margin-top: 20px;
+    width: 100%;
+    overflow-x: auto; /* 使表格可横向滚动 */
 }
 
 #shortlinks-table {
@@ -87,6 +91,8 @@ h1 {
     padding: 12px;
     border: 1px solid #ccc;
     text-align: left;
+    word-wrap: break-word; /* 允许单词换行 */
+    max-width: 250px; /* 限制列宽，避免列过长 */
 }
 
 #shortlinks-table th {
@@ -119,4 +125,33 @@ button.delete:hover {
 
 button.delete:active {
     background-color: #bd2130;
+}
+
+/* 响应式设计：适配手机设备 */
+@media (max-width: 768px) {
+    #admin-password {
+        width: 90%;
+        max-width: none;
+    }
+
+    #verify-password {
+        width: 90%;
+        padding: 12px;
+        font-size: 1.1rem;
+    }
+
+    #shortlinks-section {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    #shortlinks-table th, #shortlinks-table td {
+        padding: 8px;
+        font-size: 0.9rem;
+    }
+
+    button.delete {
+        font-size: 0.8rem;
+        padding: 3px 8px;
+    }
 }
