@@ -1,0 +1,46 @@
+<!-- public/s.html -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>跳转处理中...</title>
+    <script>
+      // 获取路径参数
+      const pathSegments = window.location.pathname.split('/');
+      const key = pathSegments[2]; // 从 /s/:key 中提取
+
+      // 发起后端请求
+      fetch(`/.netlify/functions/redirect/${key}`)
+        .then(response => {
+          if (!response.ok) throw new Error('链接无效')
+          return response.json()
+        })
+        .then(data => {
+          // 添加访问统计代码
+          navigator.sendBeacon(`/api/track/${key}`)
+          
+          // 延迟跳转确保统计发送
+          setTimeout(() => {
+            window.location.href = data.url
+          }, 100)
+        })
+        .catch(error => {
+          document.body.innerHTML = `
+            <div style="text-align:center;padding:2rem">
+              <h1>${error.message}</h1>
+              <p>错误代码：404</p>
+              <a href="/">返回首页</a>
+            </div>
+          `
+        })
+    </script>
+</head>
+<body>
+  <div class="loader">
+    <svg viewBox="0 0 50 50">
+      <circle cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+    </svg>
+    <p>正在验证链接...</p>
+  </style>
+</body>
+</html>
