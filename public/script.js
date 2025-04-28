@@ -43,7 +43,7 @@ async function loadShortlinks() {
             deleteButton.addEventListener('click', () => deleteLink(link.key));
             row.insertCell(0).appendChild(deleteButton);
 
-            row.insertCell(1).textContent = `${window.location.origin}/s/${link.key}`;
+            row.insertCell(1).textContent = `${window.location.origin}/${link.key}`;
             // row.insertCell(0).textContent = `${link.key}`;
 
             row.insertCell(2).textContent = link.url;

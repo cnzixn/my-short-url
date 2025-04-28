@@ -72,7 +72,7 @@
                 throw new Error('后端未返回有效的短链标识');
               }
           
-              const shortUrl = `${window.location.origin}/s/${data.key}`;
+              const shortUrl = `${window.location.origin}/${data.key}`;
               document.getElementById('shortUrl').value = shortUrl;
               // document.getElementById('copyButton').style.display = 'inline-block';
 
