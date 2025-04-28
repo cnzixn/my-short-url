@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>短链生成器</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>短链生成器</h1>
+        <form id="form">
+            <input type="url" id="url" required placeholder="输入长链接">
+            <button type="submit">生成</button>
+        </form>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const url = document.getElementById('url').value;
+            
+            const response = await fetch('/.netlify/functions/create', {
+                method: 'POST',
+                body: JSON.stringify({ url })
+            });
+            
+            const { key } = await response.json();
+            const shortUrl = `${window.location.origin}/${key}`;
+            
+            document.getElementById('result').innerHTML = `
+                生成的短链接：<a href="${shortUrl}">${shortUrl}</a>
+            `;
+        });
+    </script>
+</body>
+</html>
