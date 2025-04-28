@@ -1,26 +1,21 @@
-// functions/verifyPassword.js
 export async function handler(event) {
-  const requestId = event.headers['x-nf-request-id'] || 'local-dev';
-  console.log(`[${requestId}] 验证管理员密码`);
+    const body = JSON.parse(event.body);
+    const { password } = body;
 
-  if (event.httpMethod !== 'POST') {
-    return {
-      statusCode: 405,
-      body: JSON.stringify({ error: 'Method Not Allowed' })
-    };
-  }
+    const correctPassword = process.env.ADMIN_PASSWORD; // 确保环境变量已正确配置
 
-  const { password } = JSON.parse(event.body);
+    console.log('收到的密码:', password);  // 打印密码，确保接收正确
+    console.log('正确的密码:', correctPassword);  // 打印环境变量中的密码，确认密码是否正确
 
-  if (password === process.env.ADMIN_PASSWORD) {
+    if (password === correctPassword) {
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ success: true })
+        };
+    }
+    
     return {
-      statusCode: 200,
-      body: JSON.stringify({ success: true })
+        statusCode: 403,
+        body: JSON.stringify({ success: false, error: '密码错误' })
     };
-  } else {
-    return {
-      statusCode: 403,
-      body: JSON.stringify({ error: '无效的管理员密码' })
-    };
-  }
 }

@@ -2,6 +2,11 @@
 document.getElementById('verify-password').addEventListener('click', async () => {
     const password = document.getElementById('admin-password').value;
 
+    if (!password) {
+        alert('请输入密码');
+        return;
+    }
+
     try {
         const response = await fetch('/.netlify/functions/verifyPassword', {
             method: 'POST',
@@ -19,6 +24,7 @@ document.getElementById('verify-password').addEventListener('click', async () =>
         }
     } catch (error) {
         console.error('密码验证失败:', error);
+        alert('密码验证失败，请稍后重试');
     }
 });
 
