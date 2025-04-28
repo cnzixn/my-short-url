@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>链接加载中...</title>
+    <style>
+        /* 保持原有样式不变 */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="loader"></div>
+        <p id="statusText">正在加载链接...</p>
+        <div id="content" style="display: none;">
+            <img id="qrImage" width="300" alt="QR Code">
+            <p>或直接访问：<a id="targetLink" target="_blank"></a></p>
+        </div>
+    </div>
+
+    <script>
+        // 从路径中提取短码
+        const getPathKey = () => {
+            const segments = window.location.pathname.split('/').filter(Boolean);
+            return segments.length > 1 ? segments[1] : null; // 支持 /s/xxx 格式
+        };
+
+        // 调用API
+        const fetchLinkData = async (key) => {
+            try {
+                const response = await fetch('/.netlify/functions/getLink', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ key })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error('API调用失败:', error);
+                throw error;
+            }
+        };
+
+        // 主流程
+        const init = async () => {
+            const key = getPathKey();
+            if (!key) {
+                showError('无效链接地址');
+                return;
+            }
+
+            try {
+                const data = await fetchLinkData(key);
+                
+                // 移动端自动跳转
+                if (/Mobile/i.test(navigator.userAgent)) {
+                    window.location.href = data.url;
+                    return;
+                }
+
+                // 桌面端显示内容
+                document.getElementById('statusText').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+                document.getElementById('qrImage').src = data.qrCode;
+                document.getElementById('targetLink').href = data.url;
+                document.getElementById('targetLink').textContent = data.url;
+
+            } catch (error) {
+                showError(error.message.includes('404') ? '链接不存在' : '加载失败');
+            }
+        };
+
+        // 错误处理
+        const showError = (message) => {
+            document.getElementById('statusText').textContent = message;
+            document.getElementById('statusText').style.color = '#e74c3c';
+        };
+
+        // 启动
+        init();
+    </script>
+</body>
+</html>
