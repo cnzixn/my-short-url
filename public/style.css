@@ -135,8 +135,8 @@ button.delete:active {
 }
 
 /* 新增的复制、生成按钮样式 */
-button.copy,
-button.generate {
+#copyButton,
+#generateButton {
     padding: 12px 20px;
     border: none;
     border-radius: 8px;
@@ -146,23 +146,23 @@ button.generate {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-button.copy {
+#copyButton {
     background-color: #6c757d;
     color: white;
 }
 
-button.copy:hover {
+#copyButton:hover {
     background-color: #5a6268;
     transform: scale(1.05);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-button.generate {
+#generateButton {
     background-color: #28a745;
     color: white;
 }
 
-button.generate:hover {
+#generateButton:hover {
     background-color: #218838;
     transform: scale(1.05);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -196,8 +196,8 @@ button.generate:hover {
         padding: 4px 10px;
     }
 
-    button.copy,
-    button.generate {
+    #copyButton,
+    #generateButton {
         width: 90%;
         padding: 12px;
         font-size: 1rem;
