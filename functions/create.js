@@ -123,8 +123,9 @@ export async function handler(event) {
     };
   } finally {
     // 确保关闭数据库连接
-    if (client && client.isConnected()) {
+    if (client) {
       await client.close();
+      console.log(`[${requestId}] 数据库连接已关闭`);
     }
   }
 }
