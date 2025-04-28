@@ -28,6 +28,20 @@ export async function handler(event) {
       return { statusCode: 404 };
     }
 
+    // 更新点击次数，使用 $inc 操作符将 clicks 字段的值增加 1
+    const updateResult = await collection.updateOne(
+      { key },
+      { $inc: { clicks: 1 } }
+    );
+
+    if (updateResult.modifiedCount === 0) {
+      console.log(`[${requestId}] 更新点击次数失败`);
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: '更新点击次数失败' })
+      };
+    }
+
     // 设备检测
     const userAgent = event.headers['user-agent'] || '';
     const isMobile = MOBILE_REGEX.test(userAgent);
