@@ -1,5 +1,6 @@
 /* 全局样式 */
-/* 全局样式 */
+
+
 body {
     font-family: 'Arial', sans-serif;
     background: #f0f4f8;
@@ -23,8 +24,6 @@ body {
     text-align: center;
     box-sizing: border-box;
 }
-
-
 
 h1 {
     font-size: 2rem;
@@ -240,15 +239,6 @@ button.delete:active {
 
 
 /* 新增的二维码页面相关样式 */
-.loader {
-    border: 16px solid #f3f3f3;
-    border-top: 16px solid #3498db;
-    border-radius: 50%;
-    width: 80px;
-    height: 80px;
-    animation: spin 2s linear infinite;
-    margin: 0 auto 20px;
-}
 
 @keyframes spin {
     0% {
@@ -274,10 +264,10 @@ button.delete:active {
 
 /* 二维码图片样式 */
 #qrImage {
-    margin-bottom: 10px;
-    display: block; /* 使图片独占一行，便于居中 */
-    margin-left: auto;
-    margin-right: auto; /* 实现图片水平居中 */
+    display: block; /* 使图片转换为块级元素 */
+    margin: 0 auto 10px; /* 上下外边距为 0，左右外边距自动，实现水平居中 */
+    max-width: 100%; /* 确保图片不会超出父元素宽度 */
+    height: auto; /* 保持图片的宽高比 */
 }
 
 /* 新增的提示信息样式 */
@@ -285,9 +275,8 @@ button.delete:active {
     font-size: 14px;
     color: #777;
     margin-bottom: 10px;
-    text-align: center; /* 添加这一行让文字水平居中 */
+    text-align: center; /* 让提示文字水平居中 */
 }
-
 
 /* 目标链接样式 */
 #targetLink {
@@ -298,7 +287,6 @@ button.delete:active {
 #targetLink:hover {
     text-decoration: underline;
 }
-
 
 
 
