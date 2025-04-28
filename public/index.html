@@ -36,7 +36,7 @@
                 throw new Error('后端未返回有效的短链标识');
               }
           
-              const shortUrl = `${window.location.origin}/${data.key}`;
+              const shortUrl = `${window.location.origin}/x/${data.key}`;
               document.getElementById('result').innerHTML = `
                 生成的短链接：<a href="${shortUrl}">${shortUrl}</a>
               `;

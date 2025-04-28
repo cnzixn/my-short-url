@@ -3,6 +3,6 @@
   publish = "public" # 确保前端文件在public目录
 
 [[redirects]]
-  from = "/:key"
+  from = "/x/:key"
   to = "/.netlify/functions/redirect/:key"
-  status = 301
+  status = 302
