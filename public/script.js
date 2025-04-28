@@ -43,6 +43,8 @@ async function loadShortlinks() {
         const data = await response.json();
 
         const tableBody = document.getElementById('shortlinks-table').getElementsByTagName('tbody')[0];
+        // 先清空表格内容
+        tableBody.innerHTML = '';
         data.shortlinks.forEach(link => {
             const row = tableBody.insertRow();
 
@@ -75,7 +77,17 @@ async function deleteLink(key) {
             const data = await response.json();
             if (data.success) {
                 alert('短链接已删除');
-                location.reload();
+                // 从 DOM 中移除对应的行
+                const table = document.getElementById('shortlinks-table');
+                const rows = table.getElementsByTagName('tr');
+                for (let i = 0; i < rows.length; i++) {
+                    const row = rows[i];
+                    const cells = row.getElementsByTagName('td');
+                    if (cells.length > 1 && cells[1].textContent.includes(key)) {
+                        table.deleteRow(i);
+                        break;
+                    }
+                }
             } else {
                 alert(data.error || '删除失败');
             }
@@ -95,7 +107,17 @@ async function deleteLink(key) {
                 const data = await response.json();
                 if (data.success) {
                     alert('短链接已删除');
-                    location.reload();
+                    // 从 DOM 中移除对应的行
+                    const table = document.getElementById('shortlinks-table');
+                    const rows = table.getElementsByTagName('tr');
+                    for (let i = 0; i < rows.length; i++) {
+                        const row = rows[i];
+                        const cells = row.getElementsByTagName('td');
+                        if (cells.length > 1 && cells[1].textContent.includes(key)) {
+                            table.deleteRow(i);
+                            break;
+                        }
+                    }
                 } else {
                     alert(data.error || '删除失败');
                 }
