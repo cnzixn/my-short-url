@@ -1,67 +1,128 @@
+import { nanoid } from 'nanoid';
 import { connectToDatabase } from '../utils/db';
 
-exports.handler = async (event) => {
+// 短码生成配置
+const KEY_LENGTH = 6;
+const MAX_RETRIES = 3;
+
+export const handler = async (event) => {
+  // 验证请求方法
+  if (event.httpMethod !== 'POST') {
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ error: 'Method Not Allowed' })
+    };
+  }
+
+  // 检查请求体
+  if (!event.body) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: '请求体不能为空' })
+    };
+  }
+
+  let parsedBody;
   try {
-    // 解析请求体
-    const { url } = JSON.parse(event.body);
-    
-    if (!url) {
-      return { 
-        statusCode: 400, 
-        body: JSON.stringify({ error: "缺少URL参数" }) 
-      };
-    }
+    parsedBody = JSON.parse(event.body);
+  } catch (error) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: '无效的JSON格式' })
+    };
+  }
 
-    // 验证URL格式
-    if (!/^https?:\/\//i.test(url)) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: "无效的URL格式，需包含http/https协议头" })
-      };
-    }
+  // 验证URL参数
+  const { url } = parsedBody;
+  if (!url) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: '缺少URL参数' })
+    };
+  }
 
+  // 验证URL格式
+  try {
+    new URL(url); // 使用内置URL验证
+  } catch (error) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ 
+        error: '无效的URL格式',
+        validExample: 'https://example.com'
+      })
+    };
+  }
+
+  // 数据库操作
+  let client;
+  try {
     // 连接数据库
-    const { db, client } = await connectToDatabase();
-    
-    try {
-      // 检查重复URL
-      const existing = await db.collection('links').findOne({ url });
-      if (existing) {
-        return {
-          statusCode: 200,
-          body: JSON.stringify({ key: existing.key })
-        };
-      }
+    const { db, client: dbClient } = await connectToDatabase();
+    client = dbClient;
 
-      // 生成唯一key
-      const { nanoid } = await import('nanoid');
-      const key = nanoid(6);
-
-      // 写入数据库
-      await db.collection('links').insertOne({
-        key,
-        url,
-        createdAt: new Date(),
-        clicks: 0
-      });
-
+    // 检查现有记录
+    const existingLink = await db.collection('links').findOne({ url });
+    if (existingLink) {
       return {
         statusCode: 200,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key })
+        body: JSON.stringify({ 
+          key: existingLink.key,
+          existing: true 
+        })
       };
-    } finally {
-      client.close();
     }
 
+    // 生成唯一短码
+    let key;
+    let retries = 0;
+    let inserted = false;
+
+    while (retries < MAX_RETRIES && !inserted) {
+      key = nanoid(KEY_LENGTH);
+      
+      try {
+        await db.collection('links').insertOne({
+          key,
+          url,
+          createdAt: new Date(),
+          clicks: 0
+        });
+        inserted = true;
+      } catch (error) {
+        if (error.code === 11000) { // MongoDB重复键错误
+          retries++;
+          if (retries >= MAX_RETRIES) {
+            throw new Error('无法生成唯一短码，请重试');
+          }
+          continue;
+        }
+        throw error;
+      }
+    }
+
+    return {
+      statusCode: 201,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key })
+    };
+
   } catch (error) {
-    console.error('完整错误堆栈:', error.stack);
+    console.error('数据库操作失败:', error.stack);
     return {
       statusCode: 500,
-      body: JSON.stringify({ 
-        error: "服务器内部错误",
-        detail: process.env.NODE_ENV === 'development' ? error.message : null
+      body: JSON.stringify({
+        error: '服务器内部错误',
+        ...(process.env.NODE_ENV === 'development' && {
+          detail: error.message
+        })
       })
     };
+  } finally {
+    // 确保关闭数据库连接
+    if (client && client.isConnected()) {
+      await client.close();
+    }
   }
 };

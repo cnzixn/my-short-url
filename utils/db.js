@@ -1,24 +1,28 @@
 import { MongoClient } from 'mongodb';
 
-let cachedDb = null;
+const connectionOptions = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  connectTimeoutMS: 5000,
+  serverSelectionTimeoutMS: 5000,
+};
 
 export async function connectToDatabase() {
-  if (cachedDb) return cachedDb;
+  const uri = process.env.MONGODB_URI;
   
-  const client = new MongoClient(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    maxPoolSize: 10, // 连接池大小
-    minPoolSize: 2
-  });
+  if (!uri) {
+    throw new Error('缺少MONGODB_URI环境变量');
+  }
 
-  await client.connect();
-  const db = client.db('shortener'); // 数据库名
-  
-  // 创建索引（仅首次部署时执行）
-  await db.collection('links').createIndex({ key: 1 }, { unique: true });
-  await db.collection('links').createIndex({ url: 1 });
+  const client = new MongoClient(uri, connectionOptions);
 
-  cachedDb = { client, db };
-  return cachedDb;
+  try {
+    await client.connect();
+    const db = client.db('shortener'); // 替换为实际数据库名
+    return { db, client };
+  } catch (error) {
+    console.error('数据库连接失败:', error.stack);
+    await client.close();
+    throw error;
+  }
 }
