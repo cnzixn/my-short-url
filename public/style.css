@@ -1,4 +1,4 @@
-/* 基础样式 */
+/* 全局样式 */
 body {
     font-family: 'Arial', sans-serif;
     background: #f0f4f8;
@@ -12,26 +12,23 @@ body {
     overflow-x: hidden;
 }
 
-/* 容器样式 */
 .container {
     background-color: #fff;
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 900px; /* 容器最大宽度设置为 900px */
+    max-width: 900px;
     text-align: center;
     box-sizing: border-box;
 }
 
-/* 标题 */
 h1 {
     font-size: 2rem;
     color: #333;
     margin-bottom: 20px;
 }
 
-/* 密码验证部分 */
 #password-section {
     margin-bottom: 20px;
 }
@@ -45,13 +42,13 @@ h1 {
     border: 1px solid #ccc;
     border-radius: 8px;
     outline: none;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* 添加过渡效果 */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* 添加轻微阴影 */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 #admin-password:focus {
     border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2); /* 聚焦时的阴影效果 */
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
 }
 
 #verify-password {
@@ -63,14 +60,14 @@ h1 {
     font-size: 1rem;
     width: auto;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s, box-shadow 0.3s ease; /* 添加过渡效果 */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* 添加轻微阴影 */
+    transition: background-color 0.3s ease, transform 0.2s, box-shadow 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 #verify-password:hover {
     background-color: #007acc;
     transform: scale(1.05);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 鼠标悬停时的阴影效果 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 #error-message {
@@ -79,11 +76,10 @@ h1 {
     display: none;
 }
 
-/* 短链列表部分 */
 #shortlinks-section {
     margin-top: 20px;
     width: 100%;
-    overflow-x: auto; /* 使表格可横向滚动 */
+    overflow-x: auto;
 }
 
 #shortlinks-table {
@@ -93,12 +89,13 @@ h1 {
     table-layout: auto;
 }
 
-#shortlinks-table th, #shortlinks-table td {
+#shortlinks-table th,
+#shortlinks-table td {
     padding: 12px;
     border: 1px solid #ccc;
     text-align: left;
-    word-wrap: break-word; /* 允许单词换行 */
-    max-width: 250px; /* 限制列宽，避免列过长 */
+    word-wrap: break-word;
+    max-width: 250px;
 }
 
 #shortlinks-table th {
@@ -133,7 +130,6 @@ button.delete:active {
     background-color: #ff3333;
 }
 
-/* 新增的复制、生成按钮样式 */
 #copyButton,
 #generateButton {
     padding: 12px 20px;
@@ -167,7 +163,6 @@ button.delete:active {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* 针对两个输入框的样式 */
 #url,
 #shortUrl {
     padding: 12px;
@@ -184,19 +179,17 @@ button.delete:active {
     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
 }
 
-/* 输入组样式，用于包裹输入框和按钮的组合 */
 .input-group {
     display: flex;
-    align-items: center; /* 垂直居中对齐 */
+    align-items: center;
     margin-bottom: 15px;
 }
 
 .input-group input {
-    flex: 1; /* 输入框占满剩余空间 */
-    margin-right: 10px; /* 在输入框和按钮之间添加间距 */
+    flex: 1;
+    margin-right: 10px;
 }
 
-/* 响应式设计：适配手机设备 */
 @media (max-width: 768px) {
     #admin-password {
         width: 80%;
@@ -211,7 +204,8 @@ button.delete:active {
         overflow-x: auto;
     }
 
-    #shortlinks-table th, #shortlinks-table td {
+    #shortlinks-table th,
+    #shortlinks-table td {
         padding: 8px;
         font-size: 0.9rem;
     }
@@ -223,9 +217,8 @@ button.delete:active {
 
     #copyButton,
     #generateButton {
-        /* 这里适当减小按钮在手机端的内边距，以确保能和输入框在一行 */
-        padding: 10px 16px; 
-        width: auto; /* 让按钮宽度根据内容自适应 */
+        padding: 10px 16px;
+        width: auto;
     }
 
     #url,
@@ -234,7 +227,85 @@ button.delete:active {
     }
 
    .input-group {
-        /* 适当减小输入组的底部间距 */
-        margin-bottom: 10px; 
+        margin-bottom: 10px;
     }
+}
+
+/* 新增的二维码页面相关样式 */
+.loader {
+    border: 16px solid #f3f3f3;
+    border-top: 16px solid #3498db;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    animation: spin 2s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+#statusText {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+#content {
+    margin-top: 20px;
+}
+
+#qrImage {
+    margin-bottom: 10px;
+}
+
+#targetLink {
+    color: #3498db;
+    text-decoration: none;
+}
+
+#targetLink:hover {
+    text-decoration: underline;
+}
+
+/* 404页面样式 */
+.error-code {
+    font-size: 8rem;
+    color: #ccc;
+    margin-bottom: 20px;
+}
+
+.message {
+    font-size: 2rem;
+    margin-bottom: 30px;
+}
+
+.actions {
+    margin-bottom: 30px;
+}
+
+.button {
+    display: inline-block;
+    padding: 12px 28px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}
+
+.note {
+    font-size: 0.9rem;
+    color: #777;
 }
