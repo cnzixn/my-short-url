@@ -45,27 +45,33 @@ h1 {
     border: 1px solid #ccc;
     border-radius: 8px;
     outline: none;
-    transition: border-color 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* 添加过渡效果 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* 添加轻微阴影 */
 }
 
 #admin-password:focus {
     border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2); /* 聚焦时的阴影效果 */
 }
 
 #verify-password {
-    padding: 12px 20px;
-    background-color: #007bff;
+    padding: 14px 24px;
+    background-color: #0099ff;
     color: white;
     border: none;
     border-radius: 8px;
-    font-size: 1rem;
+    font-size: 1.1rem;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s;
+    transition: background-color 0.3s ease, transform 0.2s, box-shadow 0.3s ease; /* 添加过渡效果 */
+    width: 70%;
+    max-width: 300px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* 添加轻微阴影 */
 }
 
 #verify-password:hover {
-    background-color: #0056b3;
+    background-color: #007acc;
     transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 鼠标悬停时的阴影效果 */
 }
 
 #error-message {
@@ -110,22 +116,56 @@ h1 {
 }
 
 button.delete {
-    padding: 5px 10px;
-    background-color: #dc3545;
+    padding: 6px 12px;
+    background-color: #ff6666;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 1rem;
     transition: background-color 0.3s ease;
 }
 
 button.delete:hover {
-    background-color: #c82333;
+    background-color: #ff4d4d;
 }
 
 button.delete:active {
-    background-color: #bd2130;
+    background-color: #ff3333;
+}
+
+/* 新增的复制、生成按钮样式 */
+button.copy,
+button.generate {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s, box-shadow 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+button.copy {
+    background-color: #6c757d;
+    color: white;
+}
+
+button.copy:hover {
+    background-color: #5a6268;
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+button.generate {
+    background-color: #28a745;
+    color: white;
+}
+
+button.generate:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* 响应式设计：适配手机设备 */
@@ -137,7 +177,7 @@ button.delete:active {
 
     #verify-password {
         width: 90%;
-        padding: 12px;
+        padding: 14px;
         font-size: 1.1rem;
     }
 
@@ -152,7 +192,14 @@ button.delete:active {
     }
 
     button.delete {
-        font-size: 0.8rem;
-        padding: 3px 8px;
+        font-size: 0.9rem;
+        padding: 4px 10px;
+    }
+
+    button.copy,
+    button.generate {
+        width: 90%;
+        padding: 12px;
+        font-size: 1rem;
     }
 }

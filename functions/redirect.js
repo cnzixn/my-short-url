@@ -96,8 +96,8 @@ export async function handler(event) {
             </head>
             <body>
               <div class="container">
-                <h1>扫描二维码访问链接</h1>
-                <img src="${qr}" width="200" alt="QR Code">
+                <h1>请使用手机浏览器扫码</h1>
+                <img src="${qr}" width="400" alt="QR Code">
               </div>
             </body>
           </html>
