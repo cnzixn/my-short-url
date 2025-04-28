@@ -1,5 +1,7 @@
 import { connectToDatabase } from '../utils/db';
 import QRCode from 'qrcode';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
 const MOBILE_REGEX = /iPhone|iPad|iPod|Android|webOS|BlackBerry|Windows Phone/i;
 
@@ -25,7 +27,10 @@ export async function handler(event) {
     const doc = await collection.findOne({ key });
     if (!doc) {
       console.log(`[${requestId}] 未找到对应记录`);
-      return { statusCode: 404 };
+      return {
+        statusCode: 404,
+        headers: { Location: 404.html }
+      };
     }
 
     // 更新点击次数，使用 $inc 操作符将 clicks 字段的值增加 1
@@ -63,109 +68,32 @@ export async function handler(event) {
       }
       const qr = await QRCode.toDataURL(doc.url);
       console.log(`[${requestId}] 二维码生成成功`);
-
-      return {
-        statusCode: 200,
-        headers: { 'Content-Type': 'text/html' },
-        body: `
-          <html lang="zh">
-            <head>
-              <meta charset="UTF-8">
-              <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <title>扫描二维码</title>
-              <style>
-                body {
-                  font-family: Arial, sans-serif;
-                  background-color: #f4f4f4;
-                  text-align: center;
-                  padding: 20px;
-                }
-                h1 {
-                  color: #333;
-                }
-                img {
-                  border-radius: 8px;
-                  margin: 20px 0;
-                }
-                p {
-                  color: #555;
-                  font-size: 14px;
-                }
-                a {
-                  color: #007bff;
-                  text-decoration: none;
-                }
-                a:hover {
-                  text-decoration: underline;
-                }
-                .container {
-                  background-color: #fff;
-                  border-radius: 10px;
-                  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-                  padding: 30px;
-                  margin: 0 auto;
-                  max-width: 400px;
-                }
-              </style>
-            </head>
-            <body>
-              <div class="container">
-                <h1>请使用手机浏览器扫码</h1>
-                <img src="${qr}" width="400" alt="QR Code">
-              </div>
-            </body>
-          </html>
-        `
-      };
+      try {
+          // 读取HTML模板文件
+          const htmlPath = join(process.cwd(), 'public', 'qr.html');
+          let htmlContent = readFileSync(htmlPath, 'utf8');
+          // 替换占位符
+          htmlContent = htmlContent.replace('QR_CODE_PLACEHOLDER', qr);
+          return {
+              statusCode: 200,
+              headers: { 
+                  'Content-Type': 'text/html; charset=utf-8',
+                  'Cache-Control': 'no-cache' // 禁止缓存以保证动态内容
+              },
+              body: htmlContent
+          };
+      } catch (error) {
+          console.error('Error loading template:', error);
+          return {
+              statusCode: 500,
+              body: '无法加载页面'
+          };
+      }
     } catch (qrError) {
       console.error(`[${requestId}] 二维码生成失败:`, qrError);
       return {
-        statusCode: 200,
-        headers: { 'Content-Type': 'text/html' },
-        body: `
-          <html lang="zh">
-            <head>
-              <meta charset="UTF-8">
-              <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <title>二维码生成失败</title>
-              <style>
-                body {
-                  font-family: Arial, sans-serif;
-                  background-color: #f4f4f4;
-                  text-align: center;
-                  padding: 20px;
-                }
-                h1 {
-                  color: #333;
-                }
-                p {
-                  color: #555;
-                  font-size: 14px;
-                }
-                a {
-                  color: #007bff;
-                  text-decoration: none;
-                }
-                a:hover {
-                  text-decoration: underline;
-                }
-                .container {
-                  background-color: #fff;
-                  border-radius: 10px;
-                  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-                  padding: 30px;
-                  margin: 0 auto;
-                  max-width: 400px;
-                }
-              </style>
-            </head>
-            <body>
-              <div class="container">
-                <h1>二维码生成失败</h1>
-              </div>
-            </body>
-          </html>
-        `
+        statusCode: 404,
+        headers: { Location: 404.html }
       };
     }
 
