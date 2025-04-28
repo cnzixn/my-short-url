@@ -57,6 +57,9 @@ async function loadShortlinks() {
             // row.insertCell(0).textContent = `${link.key}`;
 
             row.insertCell(2).textContent = link.url;
+
+            row.insertCell(3).textContent = link.clicks;
+
         });
     } catch (error) {
         console.error('加载短链列表失败:', error);
