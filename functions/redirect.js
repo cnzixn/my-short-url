@@ -4,15 +4,15 @@ import QRCode from 'qrcode';
 const MOBILE_REGEX = /iPhone|iPad|iPod|Android|webOS|BlackBerry|Windows Phone/i;
 
 export async function handler(event) {
-  // 记录请求ID用于追踪
   const requestId = event.headers['x-nf-request-id'] || 'local-dev';
   console.log(`[${requestId}] 开始处理请求`);
 
   let client;
 
   try {
-    const segments = event.path.split('/').filter(Boolean); // 移除空字符串
-    const key = segments[segments.length - 1]; // 最后一个才是 jNVxbx
+    // 修正路径提取逻辑
+    const segments = event.path.split('/').filter(Boolean);
+    const key = segments[segments.length - 1];
     console.log(`[${requestId}] 短码: ${key}`);
 
     // 连接数据库
@@ -25,7 +25,7 @@ export async function handler(event) {
     const doc = await collection.findOne({ key });
     if (!doc) {
       console.log(`[${requestId}] 未找到对应记录`);
-      return { statusCode: 404, body: JSON.stringify({ error: "未找到短链" }) };
+      return { statusCode: 404 };
     }
 
     // 设备检测
@@ -44,12 +44,9 @@ export async function handler(event) {
 
     // 桌面端生成二维码
     try {
-      // 检查 URL 是否有协议头
       if (!/^https?:\/\//i.test(doc.url)) {
         throw new Error("URL缺少协议头");
       }
-
-      // 生成二维码
       const qr = await QRCode.toDataURL(doc.url);
       console.log(`[${requestId}] 二维码生成成功`);
 
@@ -57,17 +54,104 @@ export async function handler(event) {
         statusCode: 200,
         headers: { 'Content-Type': 'text/html' },
         body: `
-          <h1>扫描访问</h1>
-          <img src="${qr}" width="200" alt="QR Code">
-          <p>原始链接：<a href="${doc.url}">${doc.url}</a></p>
+          <html lang="zh">
+            <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>扫描二维码</title>
+              <style>
+                body {
+                  font-family: Arial, sans-serif;
+                  background-color: #f4f4f4;
+                  text-align: center;
+                  padding: 20px;
+                }
+                h1 {
+                  color: #333;
+                }
+                img {
+                  border-radius: 8px;
+                  margin: 20px 0;
+                }
+                p {
+                  color: #555;
+                  font-size: 14px;
+                }
+                a {
+                  color: #007bff;
+                  text-decoration: none;
+                }
+                a:hover {
+                  text-decoration: underline;
+                }
+                .container {
+                  background-color: #fff;
+                  border-radius: 10px;
+                  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                  padding: 30px;
+                  margin: 0 auto;
+                  max-width: 400px;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <h1>扫描二维码访问链接</h1>
+                <img src="${qr}" width="200" alt="QR Code">
+              </div>
+            </body>
+          </html>
         `
       };
     } catch (qrError) {
-      console.error(`[${requestId}] 二维码生成失败:`, qrError.stack);
+      console.error(`[${requestId}] 二维码生成失败:`, qrError);
       return {
-        statusCode: 500,
+        statusCode: 200,
         headers: { 'Content-Type': 'text/html' },
-        body: `<p>无法生成二维码，请直接访问：<a href="${doc.url}">${doc.url}</a></p>`
+        body: `
+          <html lang="zh">
+            <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>二维码生成失败</title>
+              <style>
+                body {
+                  font-family: Arial, sans-serif;
+                  background-color: #f4f4f4;
+                  text-align: center;
+                  padding: 20px;
+                }
+                h1 {
+                  color: #333;
+                }
+                p {
+                  color: #555;
+                  font-size: 14px;
+                }
+                a {
+                  color: #007bff;
+                  text-decoration: none;
+                }
+                a:hover {
+                  text-decoration: underline;
+                }
+                .container {
+                  background-color: #fff;
+                  border-radius: 10px;
+                  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                  padding: 30px;
+                  margin: 0 auto;
+                  max-width: 400px;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <h1>二维码生成失败</h1>
+              </div>
+            </body>
+          </html>
+        `
       };
     }
 
@@ -79,19 +163,24 @@ export async function handler(event) {
       body: JSON.stringify({
         error: "INTERNAL_SERVER_ERROR",
         requestId,
-        timestamp: new Date().toISOString(),
-        details: err.message
+        timestamp: new Date().toISOString()
       })
     };
   } finally {
     // 确保关闭数据库连接
     if (client) {
-      try {
-        await client.close();
-        console.log(`[${requestId}] 数据库连接已关闭`);
-      } catch (closeError) {
-        console.error(`[${requestId}] 关闭数据库连接失败:`, closeError.stack);
-      }
+      await client.close();
+      console.log(`[${requestId}] 数据库连接已关闭`);
     }
   }
 }
+
+
+                // <h1>扫描二维码访问链接</h1>
+                // <img src="${qr}" width="200" alt="QR Code">
+                // <p>原始链接：<a href="${doc.url}" target="_blank">${doc.url}</a></p>
+
+                // <h1>二维码生成失败</h1>
+                // <p>无法生成二维码，请直接访问：<a href="${doc.url}" target="_blank">${doc.url}</a></p>
+                
+                

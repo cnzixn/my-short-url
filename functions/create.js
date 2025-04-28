@@ -1,11 +1,14 @@
-import { nanoid } from 'nanoid';
 import { connectToDatabase } from '../utils/db';
+import { nanoid } from 'nanoid';
 
-// 短码生成配置
+// 短链生成配置
 const KEY_LENGTH = 6;
 const MAX_RETRIES = 3;
 
-export const handler = async (event) => {
+export async function handler(event) {
+  const requestId = event.headers['x-nf-request-id'] || 'local-dev';
+  console.log(`[${requestId}] 开始处理请求`);
+
   // 验证请求方法
   if (event.httpMethod !== 'POST') {
     return {
@@ -54,7 +57,6 @@ export const handler = async (event) => {
     };
   }
 
-  // 数据库操作
   let client;
   try {
     // 连接数据库
@@ -109,7 +111,7 @@ export const handler = async (event) => {
     };
 
   } catch (error) {
-    console.error('数据库操作失败:', error.stack);
+    console.error(`[${requestId}] 数据库操作失败:`, error.stack);
     return {
       statusCode: 500,
       body: JSON.stringify({
@@ -121,8 +123,8 @@ export const handler = async (event) => {
     };
   } finally {
     // 确保关闭数据库连接
-    if (client) {
-      await client.close(); // MongoDB 4.x 不需要检查 isConnected()
+    if (client && client.isConnected()) {
+      await client.close();
     }
   }
-};
+}
