@@ -135,8 +135,8 @@ button.delete:active {
 }
 
 /* 新增的复制、生成按钮样式 */
-#copyButton,
-#generateButton {
+button.copy,
+button.generate {
     padding: 12px 20px;
     border: none;
     border-radius: 8px;
@@ -146,26 +146,43 @@ button.delete:active {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-#copyButton {
+button.copy {
     background-color: #6c757d;
     color: white;
 }
 
-#copyButton:hover {
+button.copy:hover {
     background-color: #5a6268;
     transform: scale(1.05);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-#generateButton {
+button.generate {
     background-color: #28a745;
     color: white;
 }
 
-#generateButton:hover {
+button.generate:hover {
     background-color: #218838;
     transform: scale(1.05);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 针对两个输入框的样式 */
+#url,
+#shortUrl {
+    padding: 12px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+#url:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
 }
 
 /* 响应式设计：适配手机设备 */
@@ -196,10 +213,15 @@ button.delete:active {
         padding: 4px 10px;
     }
 
-    #copyButton,
-    #generateButton {
+    button.copy,
+    button.generate {
         width: 90%;
         padding: 12px;
         font-size: 1rem;
+    }
+
+    #url,
+    #shortUrl {
+        width: 100%;
     }
 }
