@@ -15,15 +15,6 @@
           if (!response.ok) throw new Error('链接无效')
           return response.json()
         })
-        .then(data => {
-          // 添加访问统计代码
-          navigator.sendBeacon(`/api/track/${key}`)
-          
-          // 延迟跳转确保统计发送
-          setTimeout(() => {
-            window.location.href = data.url
-          }, 100)
-        })
         .catch(error => {
           document.body.innerHTML = `
             <div style="text-align:center;padding:2rem">
