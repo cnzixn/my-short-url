@@ -1,37 +1,61 @@
-<!-- public/s.html -->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>跳转处理中...</title>
-    <script>
-      // 获取路径参数
-      const pathSegments = window.location.pathname.split('/');
-      const key = pathSegments[2]; // 从 /s/:key 中提取
-
-      // 发起后端请求
-      fetch(`/.netlify/functions/redirect/${key}`)
-        .then(response => {
-          if (!response.ok) throw new Error('链接无效')
-          return response.json()
-        })
-        .catch(error => {
-          document.body.innerHTML = `
-            <div style="text-align:center;padding:2rem">
-              <h1>${error.message}</h1>
-              <p>错误代码：404</p>
-              <a href="/">返回首页</a>
-            </div>
-          `
-        })
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>扫码访问 - {{SHORT_KEY}}</title>
+    <style>
+        :root {
+            --primary: #2E86C1;
+            --error: #e74c3c;
+        }
+        body {
+            font-family: system-ui, sans-serif;
+            display: grid;
+            place-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: #f8f9fa;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 480px;
+        }
+        #qrImage {
+            width: 100%;
+            height: auto;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+        .fallback {
+            color: var(--error);
+            margin-top: 1rem;
+        }
+    </style>
 </head>
 <body>
-  <div class="loader">
-    <svg viewBox="0 0 50 50">
-      <circle cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
-    </svg>
-    <p>正在验证链接...</p>
-  </style>
+    <div class="container">
+        <h1>请用手机扫码访问</h1>
+        <img id="qrImage" src="{{QR_CODE_URL}}" alt="动态二维码">
+        <p class="fallback">或直接访问：<a href="{{TARGET_URL}}" target="_blank">{{TARGET_URL}}</a></p>
+    </div>
+
+    <script>
+        // 动态错误处理
+        document.getElementById('qrImage').onerror = function() {
+            this.src = 'data:image/svg+xml;utf8,<svg...>'; // 备用SVG
+            document.querySelector('.fallback').style.display = 'block';
+        };
+
+        // 埋点统计
+        navigator.sendBeacon('/api/track/{{SHORT_KEY}}', JSON.stringify({
+            type: 'qr_view',
+            timestamp: Date.now()
+        }));
+    </script>
 </body>
 </html>
