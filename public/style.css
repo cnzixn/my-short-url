@@ -1,152 +1,122 @@
-/* 基本样式 */
+/* 基础样式 */
 body {
     font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #f4f4f4, #d6e1f0);
+    background: #f0f4f8;
+    margin: 0;
+    padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    margin: 0;
     color: #333;
 }
 
-/* 核心容器 */
+/* 容器样式 */
 .container {
     background-color: #fff;
     padding: 30px;
-    border-radius: 12px;
+    border-radius: 10px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    text-align: center;
     width: 100%;
-    max-width: 600px;
+    max-width: 800px;
+    text-align: center;
 }
 
 /* 标题 */
 h1 {
+    font-size: 2rem;
     color: #333;
-    font-size: 28px;
     margin-bottom: 20px;
-    font-weight: bold;
 }
 
-/* 输入框和按钮对齐 */
-.input-group {
-    display: flex;
+/* 密码验证部分 */
+#password-section {
     margin-bottom: 20px;
-    align-items: center;
 }
 
-/* 输入框 */
-input[type="url"], input[type="text"] {
-    width: 70%;
+#admin-password {
     padding: 12px;
+    font-size: 1rem;
+    width: 70%;
+    max-width: 300px;
+    margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 8px;
-    font-size: 16px;
+    outline: none;
     transition: border-color 0.3s ease;
 }
 
-input[type="url"]:focus, input[type="text"]:focus {
+#admin-password:focus {
     border-color: #007bff;
-    outline: none;
 }
 
-/* 按钮 */
-button {
-    padding: 12px 25px;
+#verify-password {
+    padding: 12px 20px;
     background-color: #007bff;
     color: white;
     border: none;
     border-radius: 8px;
+    font-size: 1rem;
     cursor: pointer;
-    font-size: 16px;
     transition: background-color 0.3s ease, transform 0.2s;
-    margin-left: 10px;
-    width: 25%;
 }
 
-/* 禁用按钮 */
-button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-
-/* 按钮：鼠标悬停、点击效果 */
-button:hover {
+#verify-password:hover {
     background-color: #0056b3;
     transform: scale(1.05);
 }
 
-button:active {
-    background-color: #004085;
-}
-
-/* 错误提示 */
-.error {
+#error-message {
     color: red;
-    font-size: 16px;
+    font-size: 0.9rem;
+    display: none;
+}
+
+/* 短链列表部分 */
+#shortlinks-section {
     margin-top: 20px;
 }
 
-/* 结果显示样式 */
-#result {
+#shortlinks-table {
+    width: 100%;
+    border-collapse: collapse;
     margin-top: 20px;
-    font-size: 16px;
-    color: #333;
 }
 
-/* 复制按钮样式 */
-#copyButton {
-    margin-left: 10px;
-    padding: 12px 25px;
-    background-color: #28a745;
+#shortlinks-table th, #shortlinks-table td {
+    padding: 12px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+#shortlinks-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+#shortlinks-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+#shortlinks-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+button.delete {
+    padding: 5px 10px;
+    background-color: #dc3545;
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease, transform 0.2s;
-    width: 25%;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
 }
 
-#copyButton:hover {
-    background-color: #218838;
-    transform: scale(1.05);
+button.delete:hover {
+    background-color: #c82333;
 }
 
-#copyButton:active {
-    background-color: #1e7e34;
-}
-
-/* 响应式设计 */
-@media (max-width: 768px) {
-    body {
-        padding: 15px;
-    }
-
-    .container {
-        width: 100%;
-        padding: 20px;
-    }
-
-    input[type="url"], input[type="text"], button {
-        width: 100%;
-        margin-bottom: 10px;
-    }
-
-    button {
-        width: 48%;
-        margin-left: 0;
-    }
-
-    #copyButton {
-        width: 48%;
-        margin-left: 0;
-    }
-}
-
-@media (max-width: 480px) {
-    input[type="url"], input[type="text"], button {
-        font-size: 14px;
-    }
+button.delete:active {
+    background-color: #bd2130;
 }
