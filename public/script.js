@@ -38,8 +38,8 @@ async function loadShortlinks() {
         data.shortlinks.forEach(link => {
             const row = tableBody.insertRow();
 
-            // row.insertCell(0).textContent = `${window.location.origin}/s/${link.key}`;
-            row.insertCell(0).textContent = `${link.key}`;
+            row.insertCell(0).textContent = `${window.location.origin}/s/${link.key}`;
+            // row.insertCell(0).textContent = `${link.key}`;
 
             row.insertCell(1).textContent = link.url;
 

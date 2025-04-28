@@ -55,15 +55,23 @@
               const shortUrl = `${window.location.origin}/s/${data.key}`;
               document.getElementById('shortUrl').value = shortUrl;
               // document.getElementById('copyButton').style.display = 'inline-block';
-          
-              // 复制按钮点击事件
-              copyButton.addEventListener('click', () => {
-                navigator.clipboard.writeText(shortUrl).then(() => {
-                  alert('短链接已复制到剪贴板！');
-                }).catch((err) => {
-                  console.error('复制失败:', err);
+              
+              // 检查是否在安全上下文中
+              if (navigator.clipboard && (window.isSecureContext || window.location.hostname === 'localhost')) {
+                // 复制按钮点击事件
+                copyButton.addEventListener('click', () => {
+                    navigator.clipboard.writeText(shortUrl).then(() => {
+                        alert('短链接已复制到剪贴板！');
+                    }).catch((err) => {
+                        console.error('复制失败:', err);
+                        alert('复制失败，请手动复制短链接。');
+                    });
                 });
-              });
+            } else {
+                console.error('当前环境不支持剪贴板操作');
+                copyButton.disabled = true;
+                copyButton.textContent = '不支持复制';
+            }
           
             } catch (error) {
               console.error('生成失败:', error);
