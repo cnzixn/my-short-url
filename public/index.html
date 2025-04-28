@@ -18,7 +18,7 @@
             <!-- 第二行：生成的短链接输入框 + 复制按钮 -->
             <div class="input-group">
                 <input type="text" id="shortUrl" readonly placeholder="生成的短链接" />
-                <button type="button" id="copyButton" style="display:none;">复制</button>
+                <button type="button" id="copyButton">复制</button>
             </div>
         </form>
         <div id="result"></div>
@@ -54,7 +54,7 @@
           
               const shortUrl = `${window.location.origin}/s/${data.key}`;
               document.getElementById('shortUrl').value = shortUrl;
-              document.getElementById('copyButton').style.display = 'inline-block';
+              // document.getElementById('copyButton').style.display = 'inline-block';
           
               // 复制按钮点击事件
               copyButton.addEventListener('click', () => {
