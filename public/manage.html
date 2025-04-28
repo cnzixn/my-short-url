@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>短链管理</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>短链管理</h1>
+
+        <!-- 密码验证 -->
+        <div id="password-section">
+            <input type="password" id="admin-password" placeholder="输入管理员密码">
+            <button id="verify-password">验证密码</button>
+            <div id="password-error" class="error" style="display: none;">密码错误，请重试。</div>
+        </div>
+
+        <!-- 短链列表 -->
+        <div id="shortlinks-section" style="display: none;">
+            <h2>短链列表</h2>
+            <table id="shortlinks-table">
+                <thead>
+                    <tr>
+                        <th>长链接</th>
+                        <th>短链接</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
