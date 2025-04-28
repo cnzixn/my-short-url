@@ -43,28 +43,117 @@ export async function handler(event) {
     }
 
     // 桌面端生成二维码
-    let qr = null;
     try {
       if (!/^https?:\/\//i.test(doc.url)) {
         throw new Error("URL缺少协议头");
       }
-      qr = await QRCode.toDataURL(doc.url);
+      const qr = await QRCode.toDataURL(doc.url);
       console.log(`[${requestId}] 二维码生成成功`);
+
+      return {
+        statusCode: 200,
+        headers: { 'Content-Type': 'text/html' },
+        body: `
+          <html lang="zh">
+            <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>扫描二维码</title>
+              <style>
+                body {
+                  font-family: Arial, sans-serif;
+                  background-color: #f4f4f4;
+                  text-align: center;
+                  padding: 20px;
+                }
+                h1 {
+                  color: #333;
+                }
+                img {
+                  border-radius: 8px;
+                  margin: 20px 0;
+                }
+                p {
+                  color: #555;
+                  font-size: 14px;
+                }
+                a {
+                  color: #007bff;
+                  text-decoration: none;
+                }
+                a:hover {
+                  text-decoration: underline;
+                }
+                .container {
+                  background-color: #fff;
+                  border-radius: 10px;
+                  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                  padding: 30px;
+                  margin: 0 auto;
+                  max-width: 400px;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <h1>扫描二维码访问链接</h1>
+                <img src="${qr}" width="200" alt="QR Code">
+              </div>
+            </body>
+          </html>
+        `
+      };
     } catch (qrError) {
       console.error(`[${requestId}] 二维码生成失败:`, qrError);
-      qr = null;  // 表示二维码生成失败
+      return {
+        statusCode: 200,
+        headers: { 'Content-Type': 'text/html' },
+        body: `
+          <html lang="zh">
+            <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>二维码生成失败</title>
+              <style>
+                body {
+                  font-family: Arial, sans-serif;
+                  background-color: #f4f4f4;
+                  text-align: center;
+                  padding: 20px;
+                }
+                h1 {
+                  color: #333;
+                }
+                p {
+                  color: #555;
+                  font-size: 14px;
+                }
+                a {
+                  color: #007bff;
+                  text-decoration: none;
+                }
+                a:hover {
+                  text-decoration: underline;
+                }
+                .container {
+                  background-color: #fff;
+                  border-radius: 10px;
+                  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                  padding: 30px;
+                  margin: 0 auto;
+                  max-width: 400px;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <h1>二维码生成失败</h1>
+              </div>
+            </body>
+          </html>
+        `
+      };
     }
-
-    return {
-      statusCode: 200,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        isMobile,
-        url: doc.url,
-        qrData: qr,  // 如果二维码生成成功，则返回二维码数据；否则返回null
-        errorMessage: qr ? null : "二维码生成失败，请访问原始链接"
-      })
-    };
 
   } catch (err) {
     console.error(`[${requestId}] 全局错误:`, err.stack);
