@@ -2,13 +2,6 @@
   functions = "functions"
   publish = "public" # 确保前端文件在public目录
 
-# netlify.toml 配置文件
-[[redirects]]
-  from = "/:key"
-  to = "/s/:key"  # 重定向到带路径参数的URL
-  status = 302
-  force = true
-
 [[redirects]]
   from = "/s/*"   # 捕获所有/s/路径的请求
   to = "/s.html"   # 指向实际文件
