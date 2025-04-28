@@ -37,8 +37,12 @@ async function loadShortlinks() {
         const tableBody = document.getElementById('shortlinks-table').getElementsByTagName('tbody')[0];
         data.shortlinks.forEach(link => {
             const row = tableBody.insertRow();
-            row.insertCell(0).textContent = link.url;
-            row.insertCell(1).textContent = `${window.location.origin}/s/${link.key}`;
+
+            // row.insertCell(0).textContent = `${window.location.origin}/s/${link.key}`;
+            row.insertCell(0).textContent = `${link.key}`;
+
+            row.insertCell(1).textContent = link.url;
+
             const deleteButton = document.createElement('button');
             deleteButton.textContent = '删除';
             deleteButton.addEventListener('click', () => deleteLink(link.key));

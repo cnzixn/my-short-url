@@ -85,6 +85,7 @@ h1 {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    table-layout: auto;
 }
 
 #shortlinks-table th, #shortlinks-table td {
