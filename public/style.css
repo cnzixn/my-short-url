@@ -215,30 +215,6 @@ button.delete:active {
     margin-right: 10px;
 }
 
-/* 美化文件上传组件样式 */
-.file-input {
-    margin: 1rem auto;
-    justify-content: center;
-    align-items: center;
-    width: calc(100% - 3rem);
-    padding: 1rem; /* 新整合的样式 */
-    display: block; 
-}
-
-.file-input input[type="file"] {
-    padding: 0.8rem 1.5rem;
-    font-size: 1rem;
-    cursor: pointer;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    background-color: white;
-    transition: background 0.3s, border-color 0.3s;
-}
-
-.file-input input[type="file"]:hover {
-    border-color: #ccc;
-    background-color: #f9f9f9;
-}
 
 
 
@@ -380,23 +356,36 @@ button.delete:active {
 .button-group {
     display: flex;
     gap: 1rem;
-    margin: 1rem auto;
-    width: calc(100% - 3rem);
+    align-items: center; /* 让子元素在垂直方向上居中对齐 */
+    margin: 1rem 0;
 }
 
-button {
-    flex: 1;
+.button-group input[type="file"] {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: white;
+    transition: background 0.3s, border-color 0.3s;
+    flex: 1; /* 让文件上传框根据剩余空间自动调整宽度 */
+    max-width: 200px; /* 设置最大宽度，避免过长 */
+    text-align: center; /* 让文字居中 */
+}
+
+.button-group input[type="file"]:hover {
+    border-color: #ccc;
+    background-color: #f9f9f9;
+}
+
+.button-group button {
     padding: 0.8rem 1.5rem;
     font-size: 1rem;
     cursor: pointer;
     border: none;
     border-radius: 6px;
     transition: background 0.3s;
-}
-
-#generateBatch {
-    background: #4CAF50;
-    color: white;
+    flex: 0 0 auto; /* 按钮宽度固定 */
 }
 
 #exportCSV {
@@ -404,9 +393,17 @@ button {
     color: white;
 }
 
-button:hover {
+#generateBatch {
+    background: #4CAF50;
+    color: white;
+}
+
+.button-group button:hover {
     opacity: 0.9;
 }
+
+
+
 
 #result {
     margin: 1rem 0;
