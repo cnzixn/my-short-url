@@ -1,9 +1,8 @@
-
-git reset --hard 31b287a
+2025.04.29
 
 作者：cnzixn@qq.com
 
-你有任何的问题，都可以使用国内的各种 AI 工具解决。
+你有任何的问题，请尝试用 AI 工具解决。
 
 以下过程，除了“注册域名”，全部免费白嫖。
 
@@ -11,21 +10,23 @@ git reset --hard 31b287a
 
 # Cloudflare 注册域名
 
-(可选)购买域名，这里价格低一些。.xyz 的 6+ 位数字的域名(123456.xyz)，目前 0.83美元/年。
+(可选)购买域名，这里价格低一些。  
+
+推荐域名 .xyz ，6 位以上数字(123456.xyz)目前 0.83美元/年。  
 
 -----
 
 # MongoDB 数据存储
 
-创建免费数据库，获取 MONGODB_URI 。
+个人用户，创建一个免费的数据库就够用了。
 
-参考这个文章：https://twikoo.js.org/mongodb-atlas.html
+获取 MONGODB_URI ，参考这个文章：https://twikoo.js.org/mongodb-atlas.html
 
 -----
 
 # GitHub 代码托管
 
-克隆仓库到你的 GitHub 
+代码托管到你的 GitHub 
 
 以下代码设置短链“有效期”为 1 天，请修改或删除。
 ``` js
@@ -61,7 +62,7 @@ Functions directory
 
 ### 注册域名
 
-这里的域名贵的吓死人，去别处购买吧。
+不要在 Netlify 注册域名，太贵了。
 
 -----
 
