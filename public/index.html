@@ -40,16 +40,16 @@
 <div class="container">
   <h1>批量短链生成</h1>
   
-  <textarea id="batchInput" placeholder="每行一个链接，可空格加上自定义短链 key，例如：
-https://a.com abc123
-https://b.com
-https://example.com example"></textarea>
+  <textarea id="batchInput" placeholder="可直接输入链接，可上传 txt 文件。
+每行一个链接，可空格加上自定义短链 key
+https://pvp.qq.com    wzry
+https://baidu.com    baidu"></textarea>
 
 
   <input type="file" id="fileUpload" accept=".txt" />
 
   <div class="button-group">
-    <button id="exportCSV">导出CSV</button>
+    <button id="exportCSV">导出TXT</button>
     <button id="generateBatch">生成短链</button>
   </div>
 
