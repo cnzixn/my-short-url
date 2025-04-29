@@ -1,8 +1,4 @@
-
-
 /* 全局样式 */
-
-
 body {
     font-family: 'Arial', sans-serif;
     background: #f0f4f8;
@@ -34,15 +30,15 @@ h1 {
 }
 
 textarea {
-  width: 100%;
-  height: 140px;
-  padding: 0.8em;
-  font-size: 1em;
-  font-family: monospace;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  resize: vertical;
-  margin-bottom: 1em;
+    width: 100%;
+    height: 140px;
+    padding: 0.8em;
+    font-size: 1em;
+    font-family: monospace;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    resize: vertical;
+    margin-bottom: 1em;
 }
 
 #password-section {
@@ -247,13 +243,7 @@ button.delete:active {
     }
 }
 
-
-
-
-
-
 /* 新增的二维码页面相关样式 */
-
 @keyframes spin {
     0% {
         transform: rotate(0deg);
@@ -269,12 +259,15 @@ button.delete:active {
     font-size: 18px;
     color: #333;
     margin-bottom: 20px;
+    text-align: center; /* 让状态文本水平居中 */
 }
 
 /* 内容区域样式 */
 #qrContent {
     margin-top: 20px;
     display: flex;
+    flex-direction: column; /* 让二维码和链接垂直排列 */
+    align-items: center; /* 子元素水平居中 */
 }
 
 /* 二维码图片样式 */
@@ -285,7 +278,6 @@ button.delete:active {
     height: auto; /* 保持图片的宽高比 */
     text-align: center; /* 虽然对 img 元素 text-align 通常无效，但保留以防后续有文本相关操作 */
 }
-
 
 /* 新增的提示信息样式 */
 #scan-tip {
@@ -305,27 +297,23 @@ button.delete:active {
     text-decoration: underline;
 }
 
-
-
-
-
-
-
-
 /* 404页面样式 */
 .error-code {
     font-size: 8rem;
     color: #ccc;
     margin-bottom: 20px;
+    text-align: center; /* 让错误码水平居中 */
 }
 
 .message {
     font-size: 2rem;
     margin-bottom: 30px;
+    text-align: center; /* 让错误信息水平居中 */
 }
 
 .actions {
     margin-bottom: 30px;
+    text-align: center; /* 让操作按钮水平居中 */
 }
 
 .button {
@@ -345,4 +333,5 @@ button.delete:active {
 .note {
     font-size: 0.9rem;
     color: #777;
+    text-align: center; /* 让提示文字水平居中 */
 }
