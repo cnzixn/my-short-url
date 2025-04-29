@@ -15,12 +15,18 @@
             <a id="targetLink" target="_blank">请打开手机浏览器，扫描二维码</a>
         </div>
     </div>
-    <script src="/script.js"></script>
+    
     <script>
         // 从路径中提取短码
         const getPathKey = () => {
             const segments = window.location.pathname.split('/').filter(Boolean);
             return segments.length > 1 ? segments[1] : null; // 支持 /s/xxx 格式
+        };
+
+        // 错误处理
+        const showError = (message) => {
+            document.getElementById('statusText').textContent = message;
+            document.getElementById('statusText').style.color = '#e74c3c';
         };
 
         // 主流程
@@ -32,33 +38,109 @@
             }
 
             try {
-                const data = await getLinkData(key);
+                // 调试日志
+                console.log('[DEBUG] 开始获取短链接:', key);
                 
-                // 移动端自动跳转
-                if (/Mobile/i.test(navigator.userAgent)) {
+                // 发送请求
+                const response = await fetch('/.netlify/functions/getLink', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'X-Debug-Key': key // 添加追踪头
+                    },
+                    body: JSON.stringify({ key })
+                });
+            
+                // 网络层错误处理
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error(`[ERROR] HTTP异常 状态码: ${response.status}`, {
+                        key,
+                        status: response.status,
+                        headers: response.headers,
+                        body: errorText
+                    });
+                    throw new Error(`服务响应异常: ${response.status} ${errorText.slice(0, 50)}`);
+                }
+            
+                // 数据解析
+                const data = await response.json().catch(e => {
+                    console.error('[ERROR] JSON解析失败', e);
+                    throw new Error('数据格式错误');
+                });
+            
+                console.log('[DEBUG] 接收数据:', data);
+            
+                // 移动端处理
+                const isMobile = /(iPhone|iPad|iPod|Android|webOS|BlackBerry|Windows Phone)/i.test(navigator.userAgent);
+                if (isMobile) {
+                    console.log('[DEBUG] 移动端跳转至:', data.url);
                     window.location.href = data.url;
                     return;
                 }
-
-                // 桌面端显示内容
-                showError('');
-                // document.getElementById('statusText').style.display = 'none';
-                document.getElementById('content').style.display = 'block';
-                document.getElementById('qrImage').src = data.qrCode;
-                // document.getElementById('targetLink').href = data.url;
-                // document.getElementById('targetLink').textContent = data.url;
-
+            
+                // 桌面端渲染
+                console.log('[DEBUG] 开始桌面端渲染');
+                const render = () => {
+                    showError(''); // 清空错误提示
+                    document.getElementById('statusText').style.display = 'none';
+                    
+                    const qrImage = document.getElementById('qrImage');
+                    const content = document.getElementById('content');
+                    
+                    // 渐进显示策略
+                    content.style.opacity = '0';
+                    content.style.display = 'block';
+                    
+                    qrImage.onload = () => {
+                        content.style.transition = 'opacity 0.3s';
+                        content.style.opacity = '1';
+                        console.log('[DEBUG] 二维码加载完成');
+                    };
+                    
+                    qrImage.src = data.qrCode;
+                    qrImage.alt = `跳转至 ${data.url}`;
+                    
+                    // 链接自动超时跳转
+                    setTimeout(() => {
+                        window.location.href = data.url;
+                    }, 10000); // 10秒后自动跳转
+                };
+            
+                // 强制重绘解决缓存问题
+                requestAnimationFrame(() => {
+                    render();
+                });
+            
             } catch (error) {
-                showError(error.message.includes('404') ? key+'链接不存在' : key+'加载失败');
+                console.error('[ERROR] 完整错误链:', error);
+                
+                // 分类错误提示
+                const errorMap = {
+                    404: () => `${key}链接不存在`,
+                    500: () => '服务暂时不可用',
+                    '网络错误': () => '网络连接失败',
+                    '数据格式错误': () => '服务器响应异常'
+                };
+                
+                const getMessage = () => {
+                    if (error.message.includes('404')) return errorMap[404]();
+                    if (error.message.includes('500')) return errorMap[500]();
+                    if (error.message.includes('Failed to fetch')) return errorMap['网络错误']();
+                    return `${key}加载失败，错误代码：${error.message.slice(0, 30)}`;
+                };
+                
+                showError(getMessage());
+                
+                // 高级错误处理
+                if (navigator.onLine) {
+                    console.log('[DEBUG] 在线状态检测: 正常');
+                    // 可添加重试逻辑
+                } else {
+                    showError('网络连接已断开');
+                }
             }
-        };
-
-        // 错误处理
-        const showError = (message) => {
-            document.getElementById('statusText').textContent = message;
-            document.getElementById('statusText').style.color = '#e74c3c';
-        };
-
+        }
         // 启动
         init();
     </script>
