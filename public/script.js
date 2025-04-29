@@ -131,7 +131,7 @@ async function deleteLink(key) {
 
 
 // 获取链接和二维码
-async function deleteLink(key) {
+async function getLinkData(key) {
     try {
         const response = await fetch('/.netlify/functions/getLink', {
             method: 'POST',

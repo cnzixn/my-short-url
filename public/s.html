@@ -32,7 +32,7 @@
             }
 
             try {
-                const data = fetchLinkData(key);
+                const data = await getLinkData(key);
                 
                 // 移动端自动跳转
                 if (/Mobile/i.test(navigator.userAgent)) {
