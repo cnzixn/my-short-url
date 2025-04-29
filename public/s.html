@@ -12,35 +12,15 @@
         <p id="statusText">正在加载链接...</p>
         <div id="qr-content">
             <img id="qrImage" width="300" alt="QR Code">
-            <a id="targetLink" target="_blank"></a>
+            <a id="targetLink" target="_blank">请打开手机浏览器，扫描二维码</a>
         </div>
     </div>
-
+    <script src="script.js"></script>
     <script>
         // 从路径中提取短码
         const getPathKey = () => {
             const segments = window.location.pathname.split('/').filter(Boolean);
             return segments.length > 1 ? segments[1] : null; // 支持 /s/xxx 格式
-        };
-
-        // 调用API
-        const fetchLinkData = async (key) => {
-            try {
-                const response = await fetch('/.netlify/functions/getLink', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ key })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                return await response.json();
-            } catch (error) {
-                console.error('API调用失败:', error);
-                throw error;
-            }
         };
 
         // 主流程
@@ -52,7 +32,7 @@
             }
 
             try {
-                const data = await fetchLinkData(key);
+                const data = fetchLinkData(key);
                 
                 // 移动端自动跳转
                 if (/Mobile/i.test(navigator.userAgent)) {

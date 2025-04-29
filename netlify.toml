@@ -8,10 +8,10 @@
   # to = "/.netlify/functions/redirect/:key"
   # status = 302
 
-[[redirects]]
-  from = "/s/*"   # 捕获所有/s/路径的请求
-  to = "/s.html"   # 指向实际文件
-  status = 200     # 重要！保持URL不变
-  force = true
+# [[redirects]]
+  # from = "/s/*"   # 捕获所有/s/路径的请求
+  # to = "/s.html"   # 指向实际文件
+  # status = 200     # 重要！保持URL不变
+  # force = true
 
 
