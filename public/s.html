@@ -10,7 +10,7 @@
 <body>
     <div class="container">
         <p id="statusText">正在加载链接...</p>
-        <div id="qr-content">
+        <div id="qrContent">
             <img id="qrImage" width="300" alt="QR Code">
             <a id="targetLink" target="_blank">请打开手机浏览器，扫描二维码</a>
         </div>
@@ -79,33 +79,25 @@
                     return;
                 }
 
-    // 桌面端渲染（修改以下部分）
-    console.log('[DEBUG] 开始桌面端渲染');
-    const render = () => {
-        showError('');
-        const qrImage = document.getElementById('qrImage');
-        const content = document.getElementById('content');
-
-        // 立即显示容器
-        content.style.display = 'block';
-        content.style.opacity = '1'; // 移除过渡动画
-        
-        // 确保先绑定事件再设置src
-        qrImage.onload = () => {
-            console.log('二维码加载完成');
-            qrImage.style.visibility = 'visible';
-        };
-        
-        // 强制刷新图片缓存
-        qrImage.src = data.qrCode + '?t=' + Date.now();
-        
-        // 立即显示文字内容
-        document.getElementById('scan-tip').style.display = 'block';
-    };
-
-    // 启动渲染
-    render();
+            // 桌面端渲染（修改以下部分）
+            console.log('[DEBUG] 开始桌面端渲染');
+            const render = () => {
+                const qrContent = document.getElementById('qrContent');
+                const qrImage = document.getElementById('qrImage');
+                
+                if (!qrContent || !qrImage) {
+                    console.error('[CRITICAL] 关键元素未找到');
+                    return;
+                }
             
+                qrContent.style.display = 'block';
+                qrImage.src = data.qrCode + '?t=' + Date.now();
+                document.getElementById('statusText').style.display = 'none';
+            };
+
+            // 启动渲染
+            render();
+
             } catch (error) {
                 console.error('[ERROR] 完整错误链:', error);
                 

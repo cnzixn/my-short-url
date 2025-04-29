@@ -260,7 +260,7 @@ button.delete:active {
 }
 
 /* 内容区域样式 */
-#qr-content {
+#qrContent {
     margin-top: 20px;
     display: flex;
 }
