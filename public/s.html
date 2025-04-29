@@ -41,7 +41,7 @@
                 }
 
                 // 桌面端显示内容
-                showError('请使用手机浏览器扫码');
+                showError('');
                 // document.getElementById('statusText').style.display = 'none';
                 document.getElementById('content').style.display = 'block';
                 document.getElementById('qrImage').src = data.qrCode;
@@ -49,7 +49,7 @@
                 // document.getElementById('targetLink').textContent = data.url;
 
             } catch (error) {
-                showError(error.message.includes('404') ? '链接不存在' : '加载失败');
+                showError(error.message.includes('404') ? key+'链接不存在' : key+'加载失败');
             }
         };
 
