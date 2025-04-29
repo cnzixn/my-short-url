@@ -226,6 +226,14 @@ button.delete:active {
 }
 
 
+@media (max-width: 768px) {
+    input[type="file"]#fileUpload {
+        width: 100%; /* 使文件上传按钮在手机端占满容器宽度 */
+        box-sizing: border-box; /* 让内边距和边框不影响元素总宽度 */
+        max-width: none; /* 去除可能设置的最大宽度限制 */
+        margin: 0.5rem 0; /* 调整上下外边距 */
+    }
+}
 
 
 @media (max-width: 768px) {
