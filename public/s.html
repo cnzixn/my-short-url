@@ -81,11 +81,15 @@
                 const img = document.createElement('img');
                 img.width = 300;
                 img.alt = "QR Code";
-                img.src = data.qrCode + '?t=' + Date.now(); // 防缓存
+                if (data.qrCode.startsWith('data:image/')) {
+                    img.src = data.qrCode; // Base64直接用
+                } else {
+                    img.src = data.qrCode + '?t=' + Date.now(); // 普通URL加时间戳防缓存
+                }
                 qrImageDiv.appendChild(img);
 
                 // 填充链接
-                targetLink.href = data.url;
+                // targetLink.href = data.url;
 
                 // 显示内容
                 qrContent.style.display = 'block';
