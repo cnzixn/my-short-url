@@ -3,28 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>批量短链生成</title>
-  <link rel="stylesheet" href="/style.css" />
+  <title>618.SH</title>
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 <div class="container">
   <h1>批量短链生成</h1>
-  <p>提示：每行一个链接，可选加自定义短链，**用空格分隔**，例如：</p>
-  <pre style="text-align: left; background: #f9f9f9; padding: 1em; border-radius: 6px;">
+  
+  <textarea id="batchInput" placeholder="每行一个链接，可空格加上自定义短链 key，例如：
 https://a.com abc123
 https://b.com
-https://example.com example</pre>
+https://example.com example"></textarea>
 
-  <textarea id="batchInput" placeholder="每行一个链接，可空格加上自定义短链 key"></textarea>
-
-  <div style="margin-top: 1em;">
+  <div class="button-group">
     <button id="generateBatch">生成短链</button>
     <button id="exportCSV">导出 CSV</button>
   </div>
 
-  <div id="result" style="margin-top: 1em;"></div>
+  <div id="result"></div>
 
-  <table id="shortlinks-table" style="display:none;">
+  <table id="shortlinks-table">
     <thead>
       <tr>
         <th>原始链接</th>
@@ -34,6 +32,8 @@ https://example.com example</pre>
     <tbody></tbody>
   </table>
 </div>
+
+
 
 <script>
 document.getElementById('generateBatch').addEventListener('click', async () => {

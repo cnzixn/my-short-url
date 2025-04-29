@@ -21,6 +21,9 @@ body {
     max-width: 900px;
     text-align: center;
     box-sizing: border-box;
+    max-width: 800px; /* 新整合的样式 */
+    margin: 0 auto; /* 新整合的样式 */
+    padding: 2rem; /* 新整合的样式 */
 }
 
 h1 {
@@ -39,6 +42,11 @@ textarea {
     border-radius: 6px;
     resize: vertical;
     margin-bottom: 1em;
+    min-height: 150px; /* 新整合的样式 */
+    margin: 1rem 0; /* 新整合的样式 */
+    padding: 1rem; /* 新整合的样式 */
+    border: 1px solid #ddd; /* 新整合的样式 */
+    font-family: inherit; /* 新整合的样式 */
 }
 
 #password-section {
@@ -99,6 +107,7 @@ textarea {
     border-collapse: collapse;
     margin-top: 20px;
     table-layout: auto;
+    margin-top: 1rem; /* 新整合的样式 */
 }
 
 #shortlinks-table th,
@@ -108,6 +117,9 @@ textarea {
     text-align: left;
     word-wrap: break-word;
     max-width: 250px;
+    padding: 0.8rem; /* 新整合的样式 */
+    text-align: left; /* 新整合的样式 */
+    border-bottom: 1px solid #ddd; /* 新整合的样式 */
 }
 
 #shortlinks-table th {
@@ -334,4 +346,50 @@ button.delete:active {
     font-size: 0.9rem;
     color: #777;
     text-align: center; /* 让提示文字水平居中 */
+}
+
+/* 新整合的样式 */
+.button-group {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+button {
+    flex: 1;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    transition: background 0.3s;
+}
+
+#generateBatch {
+    background: #4CAF50;
+    color: white;
+}
+
+#exportCSV {
+    background: #2196F3;
+    color: white;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+#result {
+    margin: 1rem 0;
+    padding: 1rem;
+    border-radius: 6px;
+}
+
+#shortlinks-table a {
+    color: #2196F3;
+    text-decoration: none;
+}
+
+#shortlinks-table a:hover {
+    text-decoration: underline;
 }
