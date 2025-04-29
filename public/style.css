@@ -35,7 +35,6 @@ h1 {
 textarea {
     width: calc(100% - 3rem); /* 宽度设置为容器宽度减去左右内边距 */
     height: 140px;
-    padding: 0.8em;
     font-size: 1em;
     font-family: monospace;
     border: 1px solid #ccc;
@@ -219,10 +218,11 @@ button.delete:active {
 /* 美化文件上传组件样式 */
 .file-input {
     margin: 1rem auto;
-    display: flex;
     justify-content: center;
     align-items: center;
     width: calc(100% - 3rem);
+    padding: 1rem; /* 新整合的样式 */
+    display: block; 
 }
 
 .file-input input[type="file"] {
