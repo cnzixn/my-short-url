@@ -49,6 +49,27 @@ textarea {
     display: block; /* 将 textarea 转换为块级元素，以便 margin: auto 生效 */
 }
 
+input[type="file"]#fileUpload {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: white;
+    transition: background 0.3s, border-color 0.3s;
+    display: inline-block;
+    margin: 1rem 0;
+    width: auto;
+    text-align: center;
+    min-width: 180px; /* 设置最小宽度 */
+}
+
+input[type="file"]#fileUpload:hover {
+    border-color: #ccc;
+    background-color: #f9f9f9;
+}
+
+
 
 #password-section {
     margin-bottom: 20px;
@@ -202,17 +223,6 @@ button.delete:active {
 #url:focus {
     border-color: #007bff;
     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
-}
-
-.input-group {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.input-group input {
-    flex: 1;
-    margin-right: 10px;
 }
 
 
