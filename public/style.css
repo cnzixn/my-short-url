@@ -222,6 +222,7 @@ button.delete:active {
     display: flex;
     justify-content: center;
     align-items: center;
+    width: calc(100% - 3rem);
 }
 
 .file-input input[type="file"] {
@@ -380,6 +381,7 @@ button.delete:active {
     display: flex;
     gap: 1rem;
     margin: 1rem 0;
+    width: calc(100% - 3rem);
 }
 
 button {
