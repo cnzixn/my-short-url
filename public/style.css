@@ -50,6 +50,7 @@ textarea {
 }
 
 input[type="file"]#fileUpload {
+    width: calc(100% - 1rem);
     padding: 0.8rem 1.5rem;
     font-size: 1rem;
     cursor: pointer;
@@ -58,17 +59,15 @@ input[type="file"]#fileUpload {
     background-color: white;
     transition: background 0.3s, border-color 0.3s;
     display: inline-block;
-    margin: 1rem 0;
-    width: auto;
+    margin: 0.2rem auto
     text-align: center;
-    min-width: 180px; /* 设置最小宽度 */
+    box-sizing: border-box; /* 让内边距和边框不影响元素总宽度 */
 }
 
 input[type="file"]#fileUpload:hover {
     border-color: #ccc;
     background-color: #f9f9f9;
 }
-
 
 
 #password-section {
@@ -125,37 +124,49 @@ input[type="file"]#fileUpload:hover {
 }
 
 #shortlinks-table {
-    width: calc(100% - 3rem); /* 宽度设置为容器宽度减去左右内边距 */
+    width: calc(100% - 1rem);
     border-collapse: collapse;
-    margin-top: 20px;
-    table-layout: auto;
-    margin: 1rem auto; /* 新整合的样式 */
+    margin: 1rem auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* 添加轻微的阴影效果，使表格有立体感 */
+    border-radius: 6px; /* 给表格添加圆角 */
+    overflow: hidden; /* 隐藏超出圆角的内容 */
+    background-color: #fff; /* 设置表格背景颜色 */
 }
 
 #shortlinks-table th,
 #shortlinks-table td {
-    padding: 12px;
-    border: 1px solid #ccc;
+    padding: 0.8rem;
     text-align: left;
-    word-wrap: break-word;
-    max-width: 250px;
-    padding: 0.8rem; /* 新整合的样式 */
-    text-align: left; /* 新整合的样式 */
-    border-bottom: 1px solid #ddd; /* 新整合的样式 */
+    border-bottom: 1px solid #e0e0e0; /* 细化边框颜色，使其不那么生硬 */
+    font-size: 0.9rem; /* 调整文字大小 */
+    line-height: 1.4; /* 增加行高，提升可读性 */
 }
 
 #shortlinks-table th {
-    background-color: #f4f4f4;
+    background-color: #f4f4f4; /* 表头背景颜色 */
     font-weight: bold;
+    text-transform: uppercase; /* 将表头文字转换为大写，增强视觉区分 */
+    letter-spacing: 0.05rem; /* 增加字母间距 */
 }
 
 #shortlinks-table tr:nth-child(even) {
-    background-color: #f9f9f9;
+    background-color: #f9f9f9; /* 隔行换色 */
 }
 
 #shortlinks-table tr:hover {
-    background-color: #f1f1f1;
+    background-color: #eaeaea; /* 鼠标悬停时的背景颜色 */
+    cursor: pointer; /* 鼠标悬停时显示指针 */
 }
+
+#shortlinks-table a {
+    color: #2196F3;
+    text-decoration: none;
+}
+
+#shortlinks-table a:hover {
+    text-decoration: underline;
+}
+
 
 button.delete {
     padding: 6px 12px;
@@ -225,15 +236,6 @@ button.delete:active {
     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
 }
 
-
-@media (max-width: 768px) {
-    input[type="file"]#fileUpload {
-        width: 100%; /* 使文件上传按钮在手机端占满容器宽度 */
-        box-sizing: border-box; /* 让内边距和边框不影响元素总宽度 */
-        max-width: none; /* 去除可能设置的最大宽度限制 */
-        margin: 0.5rem 0; /* 调整上下外边距 */
-    }
-}
 
 
 @media (max-width: 768px) {
@@ -375,7 +377,7 @@ button.delete:active {
     display: flex;
     gap: 1rem;
     margin: 1rem auto;
-    width: calc(100% - 3rem);
+    width: calc(100% - 1rem);
 }
 
 button {
