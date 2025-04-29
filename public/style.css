@@ -23,7 +23,7 @@ body {
     box-sizing: border-box;
     max-width: 800px; /* 新整合的样式 */
     margin: 0 auto; /* 新整合的样式 */
-    padding: 2rem; /* 新整合的样式 */
+    padding: 1.5rem; /* 新整合的样式 */
 }
 
 h1 {
@@ -33,7 +33,7 @@ h1 {
 }
 
 textarea {
-    width: calc(100% - 2rem); /* 宽度设置为容器宽度减去左右内边距，假设.container 的 padding 是 1rem */
+    width: calc(100% - 3rem); /* 宽度设置为容器宽度减去左右内边距 */
     height: 140px;
     padding: 0.8em;
     font-size: 1em;
@@ -105,7 +105,7 @@ textarea {
 }
 
 #shortlinks-table {
-    width: 100%;
+    width: calc(100% - 3rem); /* 宽度设置为容器宽度减去左右内边距 */
     border-collapse: collapse;
     margin-top: 20px;
     table-layout: auto;
