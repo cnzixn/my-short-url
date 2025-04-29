@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>链接解析</title>
     <link rel="stylesheet" href="/style.css">
 </head>
+
 <body>
     <div class="container">
         <p id="statusText">正在加载链接...</p>
         <div id="qrContent">
-            <img id="qrImage" width="300" alt="QR Code">
+            <div id="qrImage"></div>
             <a id="targetLink" target="_blank">请打开手机浏览器，扫描二维码</a>
         </div>
     </div>
-    
+
     <script>
         // 从路径中提取短码
         const getPathKey = () => {
@@ -39,17 +41,17 @@
             try {
                 // 调试日志
                 console.log('[DEBUG] 开始获取短链接:', key);
-                
+
                 // 发送请求
                 const response = await fetch('/.netlify/functions/getLink', {
                     method: 'POST',
-                    headers: { 
+                    headers: {
                         'Content-Type': 'application/json',
                         'X-Debug-Key': key // 添加追踪头
                     },
                     body: JSON.stringify({ key })
                 });
-            
+
                 // 网络层错误处理
                 if (!response.ok) {
                     const errorText = await response.text();
@@ -61,15 +63,15 @@
                     });
                     throw new Error(`服务响应异常: ${response.status} ${errorText.slice(0, 50)}`);
                 }
-            
+
                 // 数据解析
                 const data = await response.json().catch(e => {
                     console.error('[ERROR] JSON解析失败', e);
                     throw new Error('数据格式错误');
                 });
-            
+
                 console.log('[DEBUG] 接收数据:', data);
-            
+
                 // 移动端处理
                 const isMobile = /(iPhone|iPad|iPod|Android|webOS|BlackBerry|Windows Phone)/i.test(navigator.userAgent);
                 if (isMobile) {
@@ -83,15 +85,20 @@
                 document.addEventListener('DOMContentLoaded', () => {
                     const render = () => {
                         const qrContent = document.getElementById('qrContent');
-                        const qrImage = document.getElementById('qrImage');
-                        
-                        if (!qrContent || !qrImage) {
+                        const qrImageDiv = document.getElementById('qrImage');
+
+                        if (!qrContent ||!qrImageDiv) {
                             console.error('[CRITICAL] 关键元素未找到');
                             return;
                         }
-                        
+
+                        const img = document.createElement('img');
+                        img.width = 300;
+                        img.alt = "QR Code";
+                        img.src = data.qrCode + '?t=' + Date.now();
+
+                        qrImageDiv.appendChild(img);
                         qrContent.style.display = 'block';
-                        qrImage.src = data.qrCode + '?t=' + Date.now();
                         document.getElementById('statusText').style.display = 'none';
                     };
 
@@ -101,7 +108,7 @@
 
             } catch (error) {
                 console.error('[ERROR] 完整错误链:', error);
-                
+
                 // 分类错误提示
                 const errorMap = {
                     404: () => `${key}链接不存在`,
@@ -109,16 +116,16 @@
                     '网络错误': () => '网络连接失败',
                     '数据格式错误': () => '服务器响应异常'
                 };
-                
+
                 const getMessage = () => {
                     if (error.message.includes('404')) return errorMap[404]();
                     if (error.message.includes('500')) return errorMap[500]();
                     if (error.message.includes('Failed to fetch')) return errorMap['网络错误']();
                     return `${key}加载失败，错误代码：${error.message.slice(0, 30)}`;
                 };
-                
+
                 showError(getMessage());
-                
+
                 // 高级错误处理
                 if (navigator.onLine) {
                     console.log('[DEBUG] 在线状态检测: 正常');
@@ -132,4 +139,5 @@
         init();
     </script>
 </body>
+
 </html>

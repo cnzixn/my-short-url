@@ -266,13 +266,14 @@ button.delete:active {
 }
 
 /* 二维码图片样式 */
-#qrImage {
+#qrImage img {
     display: block; /* 使图片转换为块级元素 */
     margin: 0 auto 10px; /* 上下外边距为 0，左右外边距自动，实现水平居中 */
     width: 300px; /* 确保图片不会超出父元素宽度 */
     height: auto; /* 保持图片的宽高比 */
-    text-align: center; /* 让提示文字水平居中 */
+    text-align: center; /* 虽然对 img 元素 text-align 通常无效，但保留以防后续有文本相关操作 */
 }
+
 
 /* 新增的提示信息样式 */
 #scan-tip {
