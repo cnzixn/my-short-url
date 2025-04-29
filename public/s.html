@@ -1,21 +1,21 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>链接加载中...</title>
-    <link rel="stylesheet" href="style.css">
+    <title>链接解析</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
     <div class="container">
         <p id="statusText">正在加载链接...</p>
-        <div id="content">
-            <p id="scan-tip">请使用手机浏览器扫码</p> <!-- 新增的提示信息 -->
+        <div id="qr-content">
             <img id="qrImage" width="300" alt="QR Code">
             <a id="targetLink" target="_blank"></a>
         </div>
     </div>
-</body>
+
     <script>
         // 从路径中提取短码
         const getPathKey = () => {
@@ -61,7 +61,8 @@
                 }
 
                 // 桌面端显示内容
-                document.getElementById('statusText').style.display = 'none';
+                showError('请使用手机浏览器扫码');
+                // document.getElementById('statusText').style.display = 'none';
                 document.getElementById('content').style.display = 'block';
                 document.getElementById('qrImage').src = data.qrCode;
                 // document.getElementById('targetLink').href = data.url;
@@ -81,4 +82,6 @@
         // 启动
         init();
     </script>
+</body>
 </html>
+

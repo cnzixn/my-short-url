@@ -260,9 +260,9 @@ button.delete:active {
 }
 
 /* 内容区域样式 */
-#content {
+#qr-content {
     margin-top: 20px;
-    display: none;
+    display: flex;
 }
 
 /* 二维码图片样式 */
