@@ -1,120 +1,128 @@
 import { connectToDatabase } from '../utils/db';
-import { customAlphabet } from "nanoid";
+import { customAlphabet } from 'nanoid';
 
 const KEY_LENGTH = 6;
 const MAX_RETRIES = 3;
-const CUSTOM_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789";
+const CUSTOM_CHARS = 'abcdefghijklmnopqrstuvwxyz0123456789';
 const generateKey = customAlphabet(CUSTOM_CHARS, KEY_LENGTH);
 
 export async function handler(event) {
-  const requestId = event.headers['x-nf-request-id'] || 'local-dev';
-  console.log(`[${requestId}] 开始处理请求`);
-
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
-      body: JSON.stringify({ error: 'Method Not Allowed' })
+      body: JSON.stringify({ error: 'Method Not Allowed' }),
     };
   }
 
   if (!event.body) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ error: '请求体不能为空' })
+      body: JSON.stringify({ error: '请求体不能为空' }),
     };
   }
 
-  let body;
+  let parsed;
   try {
-    body = JSON.parse(event.body);
-  } catch {
+    parsed = JSON.parse(event.body);
+  } catch (error) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ error: '无效的 JSON 格式' })
+      body: JSON.stringify({ error: '无效的JSON格式' }),
     };
   }
 
-  const isBatch = Array.isArray(body.batch);
-  const items = isBatch ? body.batch : [body];
+  const batch = parsed.batch;
+  if (!Array.isArray(batch) || batch.length === 0) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: 'batch 应为非空数组' }),
+    };
+  }
 
-  // 连接数据库
-  let client;
+  const { db, client } = await connectToDatabase();
+  const links = db.collection('links');
+  const results = [];
+
   try {
-    const { db, client: dbClient } = await connectToDatabase();
-    client = dbClient;
+    for (const item of batch) {
+      const originalUrl = item.url?.trim();
+      let customKey = item.key?.trim();
 
-    const results = [];
-
-    for (const item of items) {
-      const { url, key: customKey } = item;
-
-      if (!url) {
-        results.push({ url: null, error: '缺少 URL' });
-        continue;
-      }
-
+      // URL 校验
       try {
-        new URL(url);
+        new URL(originalUrl);
       } catch {
-        results.push({ url, error: '无效的 URL 格式' });
+        results.push({ url: originalUrl, error: '无效的URL格式' });
         continue;
       }
 
-      // 查找是否已存在
-      const existing = await db.collection('links').findOne({ url });
+      // 检查是否已存在相同 URL
+      const existing = await links.findOne({ url: originalUrl });
       if (existing) {
-        results.push({ url, key: existing.key, existing: true });
+        results.push({ url: originalUrl, key: existing.key, existing: true });
         continue;
       }
 
-      // 生成 key（可自定义）
-      let key = customKey;
-      if (!key) {
-        let retries = 0;
-        while (retries < MAX_RETRIES) {
-          key = generateKey();
-          const exists = await db.collection('links').findOne({ key });
-          if (!exists) break;
-          retries++;
-        }
-        if (retries >= MAX_RETRIES) {
-          results.push({ url, error: '生成唯一短链失败' });
+      // 如果有自定义 key，先尝试插入
+      if (customKey) {
+        const conflict = await links.findOne({ key: customKey });
+        if (conflict) {
+          results.push({ url: originalUrl, key: customKey, error: '自定义短链已存在' });
           continue;
         }
+
+        await links.insertOne({
+          key: customKey,
+          url: originalUrl,
+          createdAt: new Date(),
+          clicks: 0,
+        });
+
+        results.push({ url: originalUrl, key: customKey });
+        continue;
       }
 
-      try {
-        await db.collection('links').insertOne({
-          key,
-          url,
-          createdAt: new Date(),
-          clicks: 0
-        });
-        results.push({ url, key });
-      } catch (e) {
-        if (e.code === 11000) {
-          results.push({ url, error: '短链 key 重复' });
-        } else {
-          results.push({ url, error: '插入失败' });
+      // 否则自动生成 key
+      let retries = 0;
+      let inserted = false;
+      let autoKey;
+
+      while (retries < MAX_RETRIES && !inserted) {
+        autoKey = generateKey();
+        try {
+          await links.insertOne({
+            key: autoKey,
+            url: originalUrl,
+            createdAt: new Date(),
+            clicks: 0,
+          });
+          inserted = true;
+          results.push({ url: originalUrl, key: autoKey });
+        } catch (err) {
+          if (err.code === 11000) {
+            retries++;
+          } else {
+            throw err;
+          }
         }
+      }
+
+      if (!inserted) {
+        results.push({ url: originalUrl, error: '生成短链失败，请重试' });
       }
     }
 
     return {
       statusCode: 200,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(isBatch ? results : results[0])
+      body: JSON.stringify({ results }),
     };
-
-  } catch (e) {
-    console.error(`[${requestId}] 出错:`, e.stack);
+  } catch (err) {
+    console.error('数据库操作失败:', err);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: '服务器内部错误' })
+      body: JSON.stringify({ error: '服务器内部错误' }),
     };
   } finally {
-    if (client) {
-      await client.close();
-    }
+    await client.close();
   }
 }
