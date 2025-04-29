@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -79,24 +78,26 @@
                     return;
                 }
 
-            // 桌面端渲染（修改以下部分）
-            console.log('[DEBUG] 开始桌面端渲染');
-            const render = () => {
-                const qrContent = document.getElementById('qrContent');
-                const qrImage = document.getElementById('qrImage');
-                
-                if (!qrContent || !qrImage) {
-                    console.error('[CRITICAL] 关键元素未找到');
-                    return;
-                }
-            
-                qrContent.style.display = 'block';
-                qrImage.src = data.qrCode + '?t=' + Date.now();
-                document.getElementById('statusText').style.display = 'none';
-            };
+                // 桌面端渲染（修改以下部分）
+                console.log('[DEBUG] 开始桌面端渲染');
+                document.addEventListener('DOMContentLoaded', () => {
+                    const render = () => {
+                        const qrContent = document.getElementById('qrContent');
+                        const qrImage = document.getElementById('qrImage');
+                        
+                        if (!qrContent || !qrImage) {
+                            console.error('[CRITICAL] 关键元素未找到');
+                            return;
+                        }
+                        
+                        qrContent.style.display = 'block';
+                        qrImage.src = data.qrCode + '?t=' + Date.now();
+                        document.getElementById('statusText').style.display = 'none';
+                    };
 
-            // 启动渲染
-            render();
+                    // 启动渲染
+                    render();
+                });
 
             } catch (error) {
                 console.error('[ERROR] 完整错误链:', error);
@@ -132,4 +133,3 @@
     </script>
 </body>
 </html>
-
