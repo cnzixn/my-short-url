@@ -4,83 +4,95 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>批量短链生成</title>
-  <style>
-    body { font-family: sans-serif; max-width: 800px; margin: 2em auto; padding: 0 1em; }
-    textarea { width: 100%; height: 150px; margin-bottom: 1em; font-family: monospace; }
-    button { padding: 0.5em 1em; font-size: 16px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 1em; }
-    td, th { border: 1px solid #ccc; padding: 0.5em; text-align: left; }
-    .error { color: red; margin-top: 1em; }
-  </style>
+  <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
-  <h1>批量生成短链接</h1>
-  <p>每行一个链接：</p>
-  <form id="form">
-    <textarea id="urlInput" placeholder="https://example.com/page1\nhttps://example.com/page2"></textarea>
-    <br />
-    <button type="submit">生成短链接</button>
-  </form>
+  <div class="container">
+    <h1>批量短链生成</h1>
+    <form id="form">
+      <textarea id="bulkInput" placeholder="每行一条格式：原始链接 或 原始链接,自定义短链"></textarea>
+      <button type="submit" id="generateButton">生成短链</button>
+    </form>
 
-  <div id="result"></div>
+    <div id="shortlinks-section">
+      <table id="shortlinks-table">
+        <thead>
+          <tr>
+            <th>原始链接</th>
+            <th>短链</th>
+            <th>状态</th>
+          </tr>
+        </thead>
+        <tbody id="shortlinks-body"></tbody>
+      </table>
+    </div>
+
+    <button id="exportCSV">导出 CSV</button>
+  </div>
 
   <script>
-    const form = document.getElementById('form');
-    const urlInput = document.getElementById('urlInput');
-    const resultDiv = document.getElementById('result');
-
-    form.addEventListener('submit', async (e) => {
+    document.getElementById("form").addEventListener("submit", async (e) => {
       e.preventDefault();
+      const rows = document.getElementById("bulkInput").value.trim().split("\n");
+      const tbody = document.getElementById("shortlinks-body");
+      tbody.innerHTML = "";
+      const results = [];
 
-      const urls = urlInput.value
-        .split('\n')
-        .map(u => u.trim())
-        .filter(u => u.length > 0);
+      for (let line of rows) {
+        const [url, customKey] = line.split(",").map(s => s.trim());
+        if (!url) continue;
 
-      if (urls.length === 0) {
-        resultDiv.innerHTML = '<div class="error">请输入至少一个链接。</div>';
-        return;
-      }
+        const tr = document.createElement("tr");
+        const tdUrl = document.createElement("td");
+        const tdShort = document.createElement("td");
+        const tdStatus = document.createElement("td");
+        tdUrl.textContent = url;
+        tdShort.textContent = "生成中...";
+        tdStatus.textContent = "...";
 
-      resultDiv.innerHTML = '正在生成，请稍候...';
+        tr.appendChild(tdUrl);
+        tr.appendChild(tdShort);
+        tr.appendChild(tdStatus);
+        tbody.appendChild(tr);
 
-      try {
-        const response = await fetch('/.netlify/functions/create', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url: urls })
-        });
+        try {
+          const res = await fetch('/.netlify/functions/create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(customKey ? { url, key: customKey } : { url })
+          });
 
-        const data = await response.json();
-
-        if (!data.results || !Array.isArray(data.results)) {
-          throw new Error('服务器响应格式错误');
-        }
-
-        let html = `<table><thead><tr><th>原始链接</th><th>短链接</th><th></th></tr></thead><tbody>`;
-
-        for (const item of data.results) {
-          const escapedUrl = item.url.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-          if (item.error) {
-            html += `<tr><td>${escapedUrl}</td><td colspan="2" style="color:red">${item.error}</td></tr>`;
+          const data = await res.json();
+          if (res.ok && data.key) {
+            const shortUrl = `${window.location.origin}/s/${data.key}`;
+            tdShort.innerHTML = `<a href="${shortUrl}" target="_blank">${shortUrl}</a>`;
+            tdStatus.textContent = data.existing ? '已存在' : '新建成功';
+            results.push([url, shortUrl, data.existing ? '已存在' : '新建']);
           } else {
-            const shortUrl = `${location.origin}/s/${item.key}`;
-            html += `
-              <tr>
-                <td>${escapedUrl}</td>
-                <td><a href="${shortUrl}" target="_blank">${shortUrl}</a></td>
-                <td><button onclick="navigator.clipboard.writeText('${shortUrl}')">复制</button></td>
-              </tr>`;
+            tdShort.textContent = "-";
+            tdStatus.textContent = data.error || '失败';
+            results.push([url, '-', data.error || '失败']);
           }
+        } catch (err) {
+          tdShort.textContent = "-";
+          tdStatus.textContent = '网络错误';
+          results.push([url, '-', '网络错误']);
         }
-
-        html += `</tbody></table>`;
-        resultDiv.innerHTML = html;
-
-      } catch (error) {
-        console.error('生成失败:', error);
-        resultDiv.innerHTML = `<div class="error">错误：${error.message}</div>`;
       }
+
+      document.getElementById("exportCSV").onclick = () => {
+        const csv = [
+          ['原始链接', '短链', '状态'],
+          ...results
+        ].map(row => row.map(val => `"${val.replace(/"/g, '""')}"`).join(",")).join("\n");
+
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", "shortlinks.csv");
+        link.click();
+      };
     });
   </script>
 </body>
