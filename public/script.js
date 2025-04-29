@@ -63,68 +63,71 @@ async function loadShortlinks() {
     }
 }
 
-// 删除短链
 async function deleteLink(key) {
-    const storedPassword = localStorage.getItem('adminPassword');
-    if (storedPassword) {
-        try {
-            const response = await fetch('/.netlify/functions/deleteShortlink', {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ password: storedPassword, key })
-            });
+    const promptForPassword = () => {
+        const pwd = prompt("请输入管理员密码以确认删除:");
+        if (pwd) localStorage.setItem('adminPassword', pwd);
+        return pwd;
+    };
 
-            const data = await response.json();
-            if (data.success) {
-                alert('短链接已删除');
-                // 从 DOM 中移除对应的行
-                const table = document.getElementById('shortlinks-table');
-                const rows = table.getElementsByTagName('tr');
-                for (let i = 0; i < rows.length; i++) {
-                    const row = rows[i];
-                    const cells = row.getElementsByTagName('td');
-                    if (cells.length > 1 && cells[1].textContent.includes(key)) {
-                        table.deleteRow(i);
-                        break;
-                    }
-                }
-            } else {
-                alert(data.error || '删除失败');
-            }
-        } catch (error) {
-            console.error('删除短链失败:', error);
-        }
-    } else {
-        const password = prompt("请输入管理员密码以确认删除:");
-        if (password) {
-            try {
-                const response = await fetch('/.netlify/functions/deleteShortlink', {
-                    method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password, key })
-                });
-
-                const data = await response.json();
-                if (data.success) {
-                    alert('短链接已删除');
-                    // 从 DOM 中移除对应的行
-                    const table = document.getElementById('shortlinks-table');
-                    const rows = table.getElementsByTagName('tr');
-                    for (let i = 0; i < rows.length; i++) {
-                        const row = rows[i];
-                        const cells = row.getElementsByTagName('td');
-                        if (cells.length > 1 && cells[1].textContent.includes(key)) {
-                            table.deleteRow(i);
-                            break;
-                        }
-                    }
-                } else {
-                    alert(data.error || '删除失败');
-                }
-            } catch (error) {
-                console.error('删除短链失败:', error);
+    const removeRowByKey = (key) => {
+        const table = document.getElementById('shortlinks-table');
+        const rows = table.getElementsByTagName('tr');
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+            const cells = row.getElementsByTagName('td');
+            if (cells.length > 1 && cells[1].textContent.includes(key)) {
+                table.deleteRow(i);
+                return i; // 返回已删除行的位置
             }
         }
+        return -1;
+    };
+
+    const restoreRow = (key, index, rowHTML) => {
+        const table = document.getElementById('shortlinks-table');
+        const newRow = table.insertRow(index);
+        newRow.outerHTML = rowHTML;
+    };
+
+    let password = localStorage.getItem('adminPassword') || promptForPassword();
+    if (!password) return;
+
+    // 先移除行以提升响应感
+    const table = document.getElementById('shortlinks-table');
+    const rows = table.getElementsByTagName('tr');
+    let removedRowIndex = -1;
+    let removedRowHTML = '';
+
+    for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        const cells = row.getElementsByTagName('td');
+        if (cells.length > 1 && cells[1].textContent.includes(key)) {
+            removedRowIndex = i;
+            removedRowHTML = row.outerHTML;
+            table.deleteRow(i);
+            break;
+        }
+    }
+
+    try {
+        const response = await fetch('/.netlify/functions/deleteShortlink', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password, key })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            alert('短链接已删除');
+        } else {
+            alert(data.error || '删除失败');
+            if (removedRowIndex >= 0) restoreRow(key, removedRowIndex, removedRowHTML);
+        }
+    } catch (error) {
+        console.error('删除短链失败:', error);
+        alert('网络异常，删除失败');
+        if (removedRowIndex >= 0) restoreRow(key, removedRowIndex, removedRowHTML);
     }
 }
 
