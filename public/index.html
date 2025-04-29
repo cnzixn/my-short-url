@@ -59,7 +59,7 @@
 
             // 禁用“生成”按钮
             generateButton.disabled = true;
-            generateButton.textContent = '生成中...';
+            generateButton.textContent = '......';
             
             try {
               const response = await fetch('/.netlify/functions/create', {
@@ -91,6 +91,9 @@
               // 启用“生成”按钮
               generateButton.disabled = false;
               generateButton.textContent = '生成';
+              document.getElementById('result').innerHTML = `
+                  <div class="error">提示：演示网站，短链有效期 1 天！</div>
+              `;
             }
         });
     </script>
