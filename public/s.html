@@ -78,39 +78,33 @@
                     window.location.href = data.url;
                     return;
                 }
-            
-                // 桌面端渲染
-                console.log('[DEBUG] 开始桌面端渲染');
-                const render = () => {
-                    showError(''); // 清空错误提示
-                    document.getElementById('statusText').style.display = 'none';
-                    
-                    const qrImage = document.getElementById('qrImage');
-                    const content = document.getElementById('content');
-                    
-                    // 渐进显示策略
-                    content.style.opacity = '0';
-                    content.style.display = 'block';
-                    
-                    qrImage.onload = () => {
-                        content.style.transition = 'opacity 0.3s';
-                        content.style.opacity = '1';
-                        console.log('[DEBUG] 二维码加载完成');
-                    };
-                    
-                    qrImage.src = data.qrCode;
-                    qrImage.alt = `跳转至 ${data.url}`;
-                    
-                    // 链接自动超时跳转
-                    setTimeout(() => {
-                        window.location.href = data.url;
-                    }, 10000); // 10秒后自动跳转
-                };
-            
-                // 强制重绘解决缓存问题
-                requestAnimationFrame(() => {
-                    render();
-                });
+
+    // 桌面端渲染（修改以下部分）
+    console.log('[DEBUG] 开始桌面端渲染');
+    const render = () => {
+        showError('');
+        const qrImage = document.getElementById('qrImage');
+        const content = document.getElementById('content');
+
+        // 立即显示容器
+        content.style.display = 'block';
+        content.style.opacity = '1'; // 移除过渡动画
+        
+        // 确保先绑定事件再设置src
+        qrImage.onload = () => {
+            console.log('二维码加载完成');
+            qrImage.style.visibility = 'visible';
+        };
+        
+        // 强制刷新图片缓存
+        qrImage.src = data.qrCode + '?t=' + Date.now();
+        
+        // 立即显示文字内容
+        document.getElementById('scan-tip').style.display = 'block';
+    };
+
+    // 启动渲染
+    render();
             
             } catch (error) {
                 console.error('[ERROR] 完整错误链:', error);
