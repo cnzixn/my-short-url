@@ -9,17 +9,16 @@
 <body>
 <div class="container">
   <h1>批量短链生成</h1>
-
-  <!-- 新增文件上传组件 -->
-  <div class="file-input">
-    <label for="fileUpload">或上传 TXT 文件：</label>
-    <input type="file" id="fileUpload" accept=".txt" />
-  </div>
   
   <textarea id="batchInput" placeholder="每行一个链接，可空格加上自定义短链 key，例如：
 https://a.com abc123
 https://b.com
 https://example.com example"></textarea>
+
+  <!-- 新增文件上传组件 -->
+  <div class="file-input">
+    <input type="file" id="fileUpload" accept=".txt" />
+  </div>
 
   <div class="button-group">
     <button id="exportCSV">导出CSV</button>
@@ -31,7 +30,7 @@ https://example.com example"></textarea>
   <table id="shortlinks-table">
     <thead>
       <tr>
-        <th>原始链接</th>
+        <th>原链</th>
         <th>短链</th>
       </tr>
     </thead>
