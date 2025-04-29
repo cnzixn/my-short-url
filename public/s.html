@@ -11,7 +11,7 @@
         <p id="statusText">正在加载链接...</p>
         <div id="qrContent" style="display: none;">
             <div id="qrImage"></div>
-            <a id="targetLink" target="_blank">请打开手机浏览器，扫描二维码</a>
+            <a id="targetLink" target="_blank"></a>
         </div>
     </div>
 
@@ -21,7 +21,7 @@
             return segments.length > 1 ? segments[1] : null;
         };
 
-        const showError = (message) => {
+        const showMsg = (message) => {
             const statusText = document.getElementById('statusText');
             statusText.textContent = message;
             statusText.style.color = '#e74c3c';
@@ -30,7 +30,7 @@
         const init = async () => {
             const key = getPathKey();
             if (!key) {
-                showError('无效链接地址');
+                showMsg('无效链接地址');
                 return;
             }
 
@@ -89,11 +89,14 @@
                 qrImageDiv.appendChild(img);
 
                 // 填充链接
-                // targetLink.href = data.url;
+                targetLink.href = data.url;
+                targetLink.innerHTML = data.url;
+                targetLink.style.display = 'none';
 
                 // 显示内容
                 qrContent.style.display = 'block';
-                document.getElementById('statusText').style.display = 'none';
+                showMsg('请用手机浏览器，扫描二维码');
+                //document.getElementById('statusText').style.display = 'none';
 
             } catch (error) {
                 console.error('[ERROR] 完整错误链:', error);
@@ -113,10 +116,10 @@
                     return `${key}加载失败，错误代码：${error.message.slice(0, 30)}`;
                 };
 
-                showError(getMessage());
+                showMsg(getMessage());
 
                 if (!navigator.onLine) {
-                    showError('网络连接已断开');
+                    showMsg('网络连接已断开');
                 }
             }
         };
@@ -125,3 +128,5 @@
     </script>
 </body>
 </html>
+
+
