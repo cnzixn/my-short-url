@@ -12,6 +12,7 @@
         <div id="qrContent" style="display: none;">
             <div id="qrImage"></div>
             <a id="targetLink" target="_blank"></a>
+            <p id="qrMessage""></p>
         </div>
     </div>
 
@@ -95,7 +96,7 @@
 
                 // 显示内容
                 qrContent.style.display = 'block';
-                showMsg('请用手机浏览器，扫描二维码');
+                showMsg('请用手机扫码(相机或浏览器)');
                 //document.getElementById('statusText').style.display = 'none';
 
             } catch (error) {
