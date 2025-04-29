@@ -9,6 +9,12 @@
 <body>
 <div class="container">
   <h1>批量短链生成</h1>
+
+  <!-- 新增文件上传组件 -->
+  <div class="file-input">
+    <label for="fileUpload">或上传 TXT 文件：</label>
+    <input type="file" id="fileUpload" accept=".txt" />
+  </div>
   
   <textarea id="batchInput" placeholder="每行一个链接，可空格加上自定义短链 key，例如：
 https://a.com abc123
@@ -36,6 +42,23 @@ https://example.com example"></textarea>
 
 
 <script>
+
+// 新增文件上传处理逻辑
+document.getElementById('fileUpload').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  try {
+    const text = await file.text();
+    document.getElementById('batchInput').value = text.replace(/\r/g, '');
+    // 自动触发生成（可选）
+    // await document.getElementById('generateBatch').click();
+  } catch (err) {
+    document.getElementById('result').innerHTML = 
+      `<div style="color: red;">文件读取失败：${err.message}</div>`;
+  }
+});
+
 document.getElementById('generateBatch').addEventListener('click', async () => {
   const lines = document.getElementById('batchInput').value.trim().split('\n');
   if (!lines.length) return;
