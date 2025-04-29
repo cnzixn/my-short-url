@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>链接解析</title>
+    <title>短链服务</title>
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
     <div class="container">
-        <p id="statusText">正在加载链接...</p>
+        <p id="statusText">稍等，正在解析短链...</p>
         <div id="qrContent" style="display: none;">
             <div id="qrImage"></div>
             <a id="targetLink" target="_blank"></a>
@@ -35,7 +35,7 @@
             }
 
             try {
-                console.log('[DEBUG] 开始获取短链接:', key);
+                // console.log('[DEBUG] 开始获取短链接:', key);
 
                 const response = await fetch('/.netlify/functions/getLink', {
                     method: 'POST',
@@ -55,18 +55,18 @@
                     throw new Error('数据格式错误');
                 });
 
-                console.log('[DEBUG] 接收数据:', data);
+                // console.log('[DEBUG] 接收数据:', data);
 
                 // 移动端直接跳转
                 const isMobile = /(iPhone|iPad|iPod|Android|webOS|BlackBerry|Windows Phone)/i.test(navigator.userAgent);
                 if (isMobile) {
-                    console.log('[DEBUG] 移动端跳转至:', data.url);
+                    // console.log('[DEBUG] 移动端跳转至:', data.url);
                     window.location.href = data.url;
                     return;
                 }
 
                 // 桌面端显示二维码
-                console.log('[DEBUG] 桌面端渲染二维码');
+                // console.log('[DEBUG] 桌面端渲染二维码');
 
                 const qrContent = document.getElementById('qrContent');
                 const qrImageDiv = document.getElementById('qrImage');

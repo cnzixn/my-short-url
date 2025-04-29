@@ -1,6 +1,7 @@
 [build]
   functions = "functions"
   publish = "public" # 确保前端文件在public目录
+  minify = true
 
 # netlify.toml 配置文件
 # [[redirects]]
