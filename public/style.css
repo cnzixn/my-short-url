@@ -109,7 +109,7 @@ textarea {
     border-collapse: collapse;
     margin-top: 20px;
     table-layout: auto;
-    margin-top: 1rem; /* 新整合的样式 */
+    margin: 1rem auto; /* 新整合的样式 */
 }
 
 #shortlinks-table th,
@@ -218,7 +218,7 @@ button.delete:active {
 
 /* 美化文件上传组件样式 */
 .file-input {
-    margin: 1rem 0;
+    margin: 1rem auto;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -380,7 +380,7 @@ button.delete:active {
 .button-group {
     display: flex;
     gap: 1rem;
-    margin: 1rem 0;
+    margin: 1rem auto;
     width: calc(100% - 3rem);
 }
 
