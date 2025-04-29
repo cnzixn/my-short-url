@@ -1,16 +1,15 @@
 import { connectToDatabase } from '../utils/db';
 import { customAlphabet } from "nanoid";
 
-// 短链生成配置
 const KEY_LENGTH = 6;
 const MAX_RETRIES = 3;
 const CUSTOM_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789";
+const generateKey = customAlphabet(CUSTOM_CHARS, KEY_LENGTH);
 
 export async function handler(event) {
   const requestId = event.headers['x-nf-request-id'] || 'local-dev';
   console.log(`[${requestId}] 开始处理请求`);
 
-  // 验证请求方法
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
@@ -18,7 +17,6 @@ export async function handler(event) {
     };
   }
 
-  // 检查请求体
   if (!event.body) {
     return {
       statusCode: 400,
@@ -36,96 +34,76 @@ export async function handler(event) {
     };
   }
 
-  // 验证URL参数
-  const { url } = parsedBody;
-  if (!url) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({ error: '缺少URL参数' })
-    };
-  }
+  const urls = Array.isArray(parsedBody.url) ? parsedBody.url : [parsedBody.url];
 
-  // 验证URL格式
-  try {
-    new URL(url); // 使用内置URL验证
-  } catch (error) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({ 
-        error: '无效的URL格式',
-        validExample: 'https://example.com'
-      })
-    };
-  }
+  const result = [];
 
   let client;
   try {
-    // 连接数据库
     const { db, client: dbClient } = await connectToDatabase();
     client = dbClient;
 
-    // 检查现有记录
-    const existingLink = await db.collection('links').findOne({ url });
-    if (existingLink) {
-      return {
-        statusCode: 200,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          key: existingLink.key,
-          existing: true 
-        })
-      };
-    }
-
-    // 生成唯一短码
-    let generateKey;
-    let key;
-    let retries = 0;
-    let inserted = false;
-
-    while (retries < MAX_RETRIES && !inserted) {
-      generateKey = customAlphabet(CUSTOM_CHARS, KEY_LENGTH);
-      key = generateKey(); // 示例：`a3b9c8`
+    for (const url of urls) {
+      if (!url) {
+        result.push({ url, error: '缺少URL参数' });
+        continue;
+      }
 
       try {
-        await db.collection('links').insertOne({
-          key,
-          url,
-          createdAt: new Date(),
-          clicks: 0
-        });
-        inserted = true;
-      } catch (error) {
-        if (error.code === 11000) { // MongoDB重复键错误
-          retries++;
-          if (retries >= MAX_RETRIES) {
-            throw new Error('无法生成唯一短码，请重试');
+        new URL(url);
+      } catch {
+        result.push({ url, error: '无效的URL格式' });
+        continue;
+      }
+
+      const existing = await db.collection('links').findOne({ url });
+      if (existing) {
+        result.push({ url, key: existing.key, existing: true });
+        continue;
+      }
+
+      let key;
+      let inserted = false;
+      let retries = 0;
+
+      while (retries < MAX_RETRIES && !inserted) {
+        key = generateKey();
+        try {
+          await db.collection('links').insertOne({
+            key,
+            url,
+            createdAt: new Date(),
+            clicks: 0
+          });
+          inserted = true;
+          result.push({ url, key });
+        } catch (err) {
+          if (err.code === 11000) {
+            retries++;
+            continue;
           }
-          continue;
+          throw err;
         }
-        throw error;
+      }
+
+      if (!inserted) {
+        result.push({ url, error: '生成失败，重试次数过多' });
       }
     }
 
     return {
-      statusCode: 201,
+      statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ key })
+      body: JSON.stringify({ results: result })
     };
 
   } catch (error) {
-    console.error(`[${requestId}] 数据库操作失败:`, error.stack);
+    console.error(`[${requestId}] 服务器错误:`, error);
     return {
       statusCode: 500,
-      body: JSON.stringify({
-        error: '服务器内部错误',
-        ...(process.env.NODE_ENV === 'development' && {
-          detail: error.message
-        })
-      })
+      body: JSON.stringify({ error: '服务器内部错误', detail: error.message })
     };
   } finally {
-    // 确保关闭数据库连接
     if (client) {
       await client.close();
       console.log(`[${requestId}] 数据库连接已关闭`);

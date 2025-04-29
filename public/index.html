@@ -1,100 +1,87 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>短链服务</title>
-    <link rel="stylesheet" href="/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>批量短链生成</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 2em auto; padding: 0 1em; }
+    textarea { width: 100%; height: 150px; margin-bottom: 1em; font-family: monospace; }
+    button { padding: 0.5em 1em; font-size: 16px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1em; }
+    td, th { border: 1px solid #ccc; padding: 0.5em; text-align: left; }
+    .error { color: red; margin-top: 1em; }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>短链生成</h1>
-        <form id="form">
-            <!-- 第一行：输入框 + 生成按钮 -->
-            <div class="input-group">
-                <input type="url" id="url" required placeholder="请输入链接">
-                <button type="submit" id="generateButton">生成</button>
-            </div>
-            <!-- 第二行：生成的短链接输入框 + 复制按钮 -->
-            <div class="input-group">
-                <input type="text" id="shortUrl" readonly placeholder="生成的链接" />
-                <button type="button" id="copyButton">复制</button>
-            </div>
-        </form>
-        <div id="result"><div class="error">提示：演示网站，短链有效期 1 天！</div></div>
-    </div>
+  <h1>批量生成短链接</h1>
+  <p>每行一个链接：</p>
+  <form id="form">
+    <textarea id="urlInput" placeholder="https://example.com/page1\nhttps://example.com/page2"></textarea>
+    <br />
+    <button type="submit">生成短链接</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    const form = document.getElementById('form');
+    const urlInput = document.getElementById('urlInput');
+    const resultDiv = document.getElementById('result');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const urls = urlInput.value
+        .split('\n')
+        .map(u => u.trim())
+        .filter(u => u.length > 0);
+
+      if (urls.length === 0) {
+        resultDiv.innerHTML = '<div class="error">请输入至少一个链接。</div>';
+        return;
+      }
+
+      resultDiv.innerHTML = '正在生成，请稍候...';
+
+      try {
+        const response = await fetch('/.netlify/functions/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: urls })
+        });
+
+        const data = await response.json();
+
+        if (!data.results || !Array.isArray(data.results)) {
+          throw new Error('服务器响应格式错误');
+        }
+
+        let html = `<table><thead><tr><th>原始链接</th><th>短链接</th><th></th></tr></thead><tbody>`;
+
+        for (const item of data.results) {
+          const escapedUrl = item.url.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+          if (item.error) {
+            html += `<tr><td>${escapedUrl}</td><td colspan="2" style="color:red">${item.error}</td></tr>`;
+          } else {
+            const shortUrl = `${location.origin}/s/${item.key}`;
+            html += `
+              <tr>
+                <td>${escapedUrl}</td>
+                <td><a href="${shortUrl}" target="_blank">${shortUrl}</a></td>
+                <td><button onclick="navigator.clipboard.writeText('${shortUrl}')">复制</button></td>
+              </tr>`;
+          }
+        }
+
+        html += `</tbody></table>`;
+        resultDiv.innerHTML = html;
+
+      } catch (error) {
+        console.error('生成失败:', error);
+        resultDiv.innerHTML = `<div class="error">错误：${error.message}</div>`;
+      }
+    });
+  </script>
 </body>
-    <script>
-        
-        // 获取复制按钮和短链接输入框元素
-        const copyButton = document.getElementById('copyButton');
-        const shortUrlInput = document.getElementById('shortUrl');
-        
-        // 为复制按钮添加点击事件监听器
-        copyButton.addEventListener('click', async () => {
-            try {
-                // 获取短链接输入框中的值
-                const shortUrl = shortUrlInput.value;
-                // 使用 navigator.clipboard 来实现复制功能
-                await navigator.clipboard.writeText(shortUrl);
-                // alert('短链接已复制到剪贴板！');
-                document.getElementById('result').innerHTML = `
-                  <div class="error">提示：短链接已复制到剪贴板！</div>
-                `;
-            } catch (error) {
-                console.error('复制失败:', error);
-                // alert('复制失败，请手动复制短链接。');
-                document.getElementById('result').innerHTML = `
-                  <div class="error">复制失败：${error.message}</div>
-                `;
-            }
-        });
-
-        
-        document.getElementById('form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const url = document.getElementById('url').value;
-            const generateButton = document.getElementById('generateButton');
-            const copyButton = document.getElementById('copyButton');
-
-            // 禁用“生成”按钮
-            generateButton.disabled = true;
-            generateButton.textContent = '......';
-            
-            try {
-              const response = await fetch('/.netlify/functions/create', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ url })
-              });
-          
-              if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-              }
-          
-              const data = await response.json();
-              
-              if (!data.key) {
-                throw new Error('后端未返回有效的短链标识');
-              }
-          
-              const shortUrl = `${window.location.origin}/s/${data.key}`;
-              document.getElementById('shortUrl').value = shortUrl;
-              // document.getElementById('copyButton').style.display = 'inline-block';
-
-            } catch (error) {
-              console.error('生成失败:', error);
-              document.getElementById('result').innerHTML = `
-                <div class="error">错误：${error.message}</div>
-              `;
-            } finally {
-              // 启用“生成”按钮
-              generateButton.disabled = false;
-              generateButton.textContent = '生成';
-              document.getElementById('result').innerHTML = `
-                  <div class="error">提示：演示网站，短链有效期 1 天！</div>
-              `;
-            }
-        });
-    </script>
 </html>
