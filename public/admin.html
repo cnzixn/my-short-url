@@ -1,52 +1,38 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>618.SH - 短链管理</title>
-    <link rel="stylesheet" href="./main.css">
-    <link rel="stylesheet" href="./admin.css">
+    <title>618.SH</title>
+    <link rel="stylesheet" href="/main.css">
+    <link rel="stylesheet" href="/admin.css">
 </head>
 <body>
     <div class="container">
-        <h1>短链管理控制台</h1>
+        <h1>短链管理</h1>
 
-        <!-- 密码验证区块 -->
-        <div id="auth-section" class="card">
-            <h2>管理员验证</h2>
-            <div class="input-group">
-                <input 
-                    type="password" 
-                    id="admin-password" 
-                    placeholder="请输入管理员密码"
-                    autocomplete="current-password"
-                >
-                <button id="verify-btn" class="primary-btn">验证密码</button>
-            </div>
-            <div id="auth-error" class="error-message"></div>
+        <!-- 密码验证 -->
+        <div id="password-section">
+            <input type="password" id="admin-password" placeholder="输入管理员密码">
+            <button id="verify-password">验证密码</button>
+            <div id="password-error" class="error" style="display: none;">密码错误，请重试。</div>
         </div>
 
-        <!-- 短链管理区块 -->
-        <div id="management-section" class="card" style="display: none;">
-            <div class="table-container">
-                <table id="shortlinks-table">
-                    <thead>
-                        <tr>
-                            <th width="120">操作</th>
-                            <th width="100">点击数</th>
-                            <th>短链地址</th>
-                            <th>原始链接</th>
-                        </tr>
-                    </thead>
-                    <tbody class="data-body"></tbody>
-                </table>
-            </div>
-
-            <!-- 分页控件 -->
-            <div id="pagination" class="pagination-container"></div>
+        <!-- 短链列表 -->
+        <div id="shortlinks-section" style="display: none;">
+            <table id="shortlinks-table">
+                <thead>
+                    <tr>
+                        <th>操作</th>
+                        <th>访问</th>
+                        <th>短链</th>
+                        <th>原链</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
         </div>
     </div>
-
-    <script type="module" src="./admin.js"></script>
+    <script src="/admin.js"></script>
 </body>
 </html>

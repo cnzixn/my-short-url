@@ -53,55 +53,6 @@
     display: none;
 }
 
-/* 分页控件样式 */
-.pagination {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-  padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 6px;
-}
-
-.pagination button {
-  padding: 0.5rem 1rem;
-  border: 1px solid #ddd;
-  background: white;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.pagination button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* 加载状态 */
-button.loading {
-  position: relative;
-  pointer-events: none;
-}
-
-button.loading::after {
-  content: "";
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  width: 20px;
-  height: 20px;
-  border: 3px solid #f3f3f3;
-  border-top: 3px solid #3498db;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-
-
 /* 响应式调整 */
 @media (max-width: 768px) {
     #password-section {

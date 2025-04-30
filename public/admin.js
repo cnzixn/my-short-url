@@ -1,146 +1,133 @@
-// admin.js
+// 尝试从 localStorage 中获取密码
+const storedPassword = localStorage.getItem('adminPassword');
+if (storedPassword) {
+    document.getElementById('admin-password').value = storedPassword;
+}
 
-import { api } from './api.js';
+// 管理员密码验证
+document.getElementById('verify-password').addEventListener('click', async () => {
+    const password = document.getElementById('admin-password').value;
 
-// DOM元素缓存
-const elements = {
-  passwordSection: document.getElementById('password-section'),
-  shortlinksSection: document.getElementById('shortlinks-section'),
-  adminPassword: document.getElementById('admin-password'),
-  verifyButton: document.getElementById('verify-password'),
-  passwordError: document.getElementById('password-error'),
-  shortlinksTable: document.getElementById('shortlinks-table')
-};
+    if (!password) {
+        alert('请输入密码');
+        return;
+    }
 
-// 初始化
-document.addEventListener('DOMContentLoaded', () => {
-  loadShortlinks(1);
-  bindEvents();
-  checkAuth();
+    try {
+        const response = await fetch('/.netlify/functions/verifyPassword', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            // 验证成功后，将密码存储到 localStorage
+            localStorage.setItem('adminPassword', password);
+            document.getElementById('password-section').style.display = 'none';
+            document.getElementById('shortlinks-section').style.display = 'block';
+            loadShortlinks();
+        } else {
+            document.getElementById('password-error').style.display = 'block';
+        }
+    } catch (error) {
+        console.error('密码验证失败:', error);
+        alert('密码验证失败，请稍后重试');
+    }
 });
 
-// 事件绑定
-function bindEvents() {
-  elements.verifyButton.addEventListener('click', handleVerify);
-  elements.adminPassword.addEventListener('keypress', e => {
-    if (e.key === 'Enter') handleVerify();
-  });
-}
-
-// 密码验证处理
-async function handleVerify() {
-  const password = elements.adminPassword.value.trim();
-  
-  if (!password) {
-    showError('请输入密码');
-    return;
-  }
-
-  try {
-    elements.passwordError.style.display = 'none';
-    elements.verifyButton.disabled = true;
-    
-    const result = await api.verifyPassword(password);
-    api.setAuthToken(result.token); // 假设后端返回认证令牌
-    
-    elements.passwordSection.style.display = 'none';
-    elements.shortlinksSection.style.display = 'block';
-    await loadShortlinks(1);
-  } catch (error) {
-    showError(error.message);
-  } finally {
-    elements.verifyButton.disabled = false;
-  }
-}
-
 // 加载短链列表
-async function loadShortlinks(page = 1) {
-  try {
-    showLoading(true);
-    const data = await api.getShortlinks({ page, limit: 20 });
-    
-    updateTable(data.shortlinks);
-    setupPagination(data.total, page);
-  } catch (error) {
-    showError(`加载失败: ${error.message}`);
-  } finally {
-    showLoading(false);
-  }
+async function loadShortlinks() {
+    try {
+        const response = await fetch('/.netlify/functions/getShortlinks');
+        const data = await response.json();
+
+        const tableBody = document.getElementById('shortlinks-table').getElementsByTagName('tbody')[0];
+        // 先清空表格内容
+        tableBody.innerHTML = '';
+        data.shortlinks.forEach(link => {
+            const row = tableBody.insertRow();
+
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = '删除';
+            deleteButton.addEventListener('click', () => deleteLink(link.key));
+
+            row.insertCell(0).appendChild(deleteButton); // 索引 0：删除按钮
+            row.insertCell(1).textContent = link.clicks.toString(); // 索引 1：点击次数
+            row.insertCell(2).textContent = `${window.location.origin}/s/${link.key}`; // 索引 2：短链
+            row.insertCell(3).textContent = link.url; // 索引 3：原始 URL
+
+        });
+    } catch (error) {
+        console.error('加载短链列表失败:', error);
+    }
 }
 
-// 表格更新
-function updateTable(links) {
-  const tbody = elements.shortlinksTable.querySelector('tbody');
-  tbody.innerHTML = '';
+async function deleteLink(key) {
+    const promptForPassword = () => {
+        const pwd = prompt("请输入管理员密码以确认删除:");
+        if (pwd) localStorage.setItem('adminPassword', pwd);
+        return pwd;
+    };
 
-  links.forEach(link => {
-    const row = document.createElement('tr');
-    
-    // 操作列
-    const actionCell = document.createElement('td');
-    const deleteBtn = document.createElement('button');
-    deleteBtn.className = 'delete-btn';
-    deleteBtn.textContent = '删除';
-    deleteBtn.addEventListener('click', () => confirmDelete(link.key));
-    actionCell.appendChild(deleteBtn);
+    const removeRowByKey = (key) => {
+        const table = document.getElementById('shortlinks-table');
+        const rows = table.getElementsByTagName('tr');
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+            const cells = row.getElementsByTagName('td');
+            if (cells.length > 1 && cells[1].textContent.includes(key)) {
+                table.deleteRow(i);
+                return i; // 返回已删除行的位置
+            }
+        }
+        return -1;
+    };
 
-    // 数据列
-    row.insertCell().textContent = link.clicks.toLocaleString();
-    row.insertCell().innerHTML = `<a href="${window.location.origin}/s/${link.key}" target="_blank">${link.key}</a>`;
-    row.insertCell().textContent = link.url;
+    const restoreRow = (key, index, rowHTML) => {
+        const table = document.getElementById('shortlinks-table');
+        const newRow = table.insertRow(index);
+        newRow.outerHTML = rowHTML;
+    };
 
-    tbody.appendChild(row);
-  });
-}
-
-// 确认删除
-async function confirmDelete(key) {
-  const confirmed = confirm('确定要删除这个短链吗？');
-  if (!confirmed) return;
-
-  try {
-    const password = prompt('请输入管理员密码确认删除:');
+    let password = localStorage.getItem('adminPassword') || promptForPassword();
     if (!password) return;
 
-    await api.deleteShortlink(key, password);
-    loadShortlinks(1); // 刷新列表
-  } catch (error) {
-    showError(error.message);
-  }
+    // 先移除行以提升响应感
+    const table = document.getElementById('shortlinks-table');
+    const rows = table.getElementsByTagName('tr');
+    let removedRowIndex = -1;
+    let removedRowHTML = '';
+
+    for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        const cells = row.getElementsByTagName('td');
+        if (cells.length > 1 && cells[1].textContent.includes(key)) {
+            removedRowIndex = i;
+            removedRowHTML = row.outerHTML;
+            table.deleteRow(i);
+            break;
+        }
+    }
+
+    try {
+        const response = await fetch('/.netlify/functions/deleteShortlink', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password, key })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            alert('短链接已删除');
+        } else {
+            alert(data.error || '删除失败');
+            if (removedRowIndex >= 0) restoreRow(key, removedRowIndex, removedRowHTML);
+        }
+    } catch (error) {
+        console.error('删除短链失败:', error);
+        alert('网络异常，删除失败');
+        if (removedRowIndex >= 0) restoreRow(key, removedRowIndex, removedRowHTML);
+    }
 }
 
-// 分页设置
-function setupPagination(total, currentPage) {
-  const pagination = document.createElement('div');
-  pagination.className = 'pagination';
-  
-  const totalPages = Math.ceil(total / 20);
-  
-  pagination.innerHTML = `
-    <button ${currentPage === 1 ? 'disabled' : ''} onclick="loadShortlinks(${currentPage - 1})">上一页</button>
-    <span>第 ${currentPage} 页 / 共 ${totalPages} 页</span>
-    <button ${currentPage === totalPages ? 'disabled' : ''} onclick="loadShortlinks(${currentPage + 1})">下一页</button>
-  `;
-
-  elements.shortlinksSection.prepend(pagination);
-}
-
-// 辅助函数
-function showError(message) {
-  elements.passwordError.textContent = message;
-  elements.passwordError.style.display = 'block';
-  setTimeout(() => elements.passwordError.style.display = 'none', 3000);
-}
-
-function showLoading(isLoading) {
-  elements.verifyButton.textContent = isLoading ? '加载中...' : '验证密码';
-  elements.verifyButton.classList.toggle('loading', isLoading);
-}
-
-function checkAuth() {
-  const savedPassword = localStorage.getItem('adminPassword');
-  if (savedPassword) {
-    elements.adminPassword.value = savedPassword;
-    handleVerify();
-  }
-}
