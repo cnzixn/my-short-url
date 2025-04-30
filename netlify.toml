@@ -1,18 +1,31 @@
+# netlify.toml 配置文件
+
 [build]
   functions = "functions"
-  publish = "public" # 确保前端文件在public目录
+  publish = "public" # 前端文件发布目录
   minify = true
 
-# netlify.toml 配置文件
-# [[redirects]]
-  # from = "/:key"
-  # to = "/.netlify/functions/redirect/:key"
-  # status = 302
-
 [[redirects]]
-  from = "/s/*"   # 捕获所有/s/路径的请求
-  to = "/s.html"   # 指向实际文件
-  status = 200     # 重要！保持URL不变
+  from = "/s/*"
+  to = "/s.html"
+  status = 200
   force = true
 
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
+  force = true
 
+[[redirects]]
+  from = "/404"
+  to = "/404.html"
+  status = 200
+  force = true
+
+# 处理根路径请求
+[[redirects]]
+  from = "/"
+  to = "/home.html"
+  status = 200
+  force = true

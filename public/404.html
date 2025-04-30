@@ -4,28 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>618.SH</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="./main.css">
+    <link rel="stylesheet" href="./404.css">
 </head>
 <body>
     <div class="container">
         <div class="error-code">404</div>
-        <h1 class="message">您访问的链接不存在或已过期！</h1>
+        <h1 class="message">你访问的页面不存在</h1>
         <div class="actions">
             <a href="/" class="button">返回首页</a>
         </div>
     </div>
-
-    <!-- 可选埋点代码 -->
-    <script>
-        // 跟踪404错误数据
-        window.dataLayer = window.dataLayer || [];
-        dataLayer.push({
-            'event': '404Error',
-            'errorPath': window.location.pathname
-        });
-
-        // 自动保存当前URL到localStorage（用于错误报告）
-        localStorage.setItem('last404Path', window.location.href);
-    </script>
 </body>
 </html>

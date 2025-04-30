@@ -1,77 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>618.SH</title>
-  <link rel="stylesheet" href="/style.css">
-  <style>
-    /* 新增加载状态样式 */
-    .loading {
-      display: none;
-      text-align: center;
-      margin: 1rem 0;
-    }
 
-    .spinner {
-      border: 4px solid rgba(0, 0, 0, 0.1);
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      border-left-color: #09f;
-      animation: spin 1s linear infinite;
-      display: inline-block;
-      margin-right: 10px;
-      vertical-align: middle;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    /* 禁用按钮样式 */
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-  </style>
-</head>
-<body>
-<div class="container">
-  <h1>批量短链生成</h1>
-  
-  <textarea id="batchInput" placeholder="可直接输入链接，可上传 txt 文件。
-每行一个链接，可空格加上自定义短链 key
-https://pvp.qq.com    wzry
-https://baidu.com    baidu"></textarea>
-
-
-  <input type="file" id="fileUpload" accept=".txt" />
-
-  <div class="button-group">
-    <button id="exportCSV">导出TXT</button>
-    <button id="generateBatch">生成短链</button>
-  </div>
-
-  <div id="loading" class="loading">
-    <div class="spinner"></div>
-    <span>正在处理，请勿关闭页面...</span>
-  </div>
-
-  <div id="result"></div>
-
-  <table id="shortlinks-table">
-    <thead>
-      <tr>
-        <th>短链</th>
-        <th>原链</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-</div>
-
-<script>
 // 新增文件上传处理逻辑
 document.getElementById('fileUpload').addEventListener('change', async (e) => {
   const file = e.target.files[0];
@@ -163,6 +90,3 @@ document.getElementById('exportCSV').addEventListener('click', () => {
   link.download = 'shortlinks.txt';
   link.click();
 });
-</script>
-</body>
-</html>

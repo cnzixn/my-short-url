@@ -1,0 +1,55 @@
+/* s.css - 短链解析页面专用样式 */
+
+
+/* 状态提示样式 */
+#sTipText {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* 二维码内容容器 */
+#sContent {
+    margin-top: 20px;
+    display: none; /* 默认隐藏，生成后显示 */
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 二维码图片容器 */
+#sImage {
+    margin-bottom: 15px;
+}
+
+#sImage img {
+    display: block;
+    margin: 0 auto;
+    width: 300px;
+    height: auto;
+    border: 1px solid #eee;
+    padding: 10px;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* 目标链接样式 */
+#sTargetLink {
+    color: #2196F3;
+    text-decoration: none;
+    font-size: 14px;
+    margin-top: 10px;
+    word-break: break-all;
+    display: block;
+}
+
+#sTargetLink:hover {
+    text-decoration: underline;
+}
+
+/* 响应式调整 */
+@media (max-width: 480px) {
+    #sImage img {
+        width: 250px;
+    }
+}
