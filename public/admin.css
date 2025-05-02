@@ -53,6 +53,101 @@
     display: none;
 }
 
+/* admin.css - 专属短链管理页面样式 */
+
+/* 短链表格容器 */
+#shortlinks-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #fff;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+/* 表头样式 */
+#shortlinks-table th {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    padding: 1.2rem;
+    text-align: left;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid #34495e;
+}
+
+/* 表格单元格 */
+#shortlinks-table td {
+    padding: 1.2rem;
+    border-bottom: 1px solid #ecf0f1;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #34495e;
+}
+
+/* 表格行悬停效果 */
+#shortlinks-table tbody tr:hover {
+    background-color: #f8f9fa;
+    transition: background-color 0.2s ease;
+}
+
+/* 交替行颜色 */
+#shortlinks-table tbody tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+/* 操作按钮列 */
+#shortlinks-table td:first-child {
+    width: 120px;
+    white-space: nowrap;
+    text-align: center;
+}
+
+/* 删除按钮样式 */
+.delete-btn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.delete-btn:hover {
+    background: #c0392b;
+    transform: scale(1.05);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    #shortlinks-table {
+        font-size: 0.9rem;
+    }
+
+    #shortlinks-table th,
+    #shortlinks-table td {
+        padding: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    #shortlinks-table {
+        font-size: 0.85rem;
+    }
+
+    #shortlinks-table th,
+    #shortlinks-table td {
+        padding: 0.6rem;
+    }
+}
+
+
 /* 响应式调整 */
 @media (max-width: 768px) {
     #password-section {

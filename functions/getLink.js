@@ -1,3 +1,6 @@
+// functions/getLink.js
+// 根据短链接 asdxnfj ，获取原链接和原链接的二维码
+
 import { connectToDatabase } from '../utils/db';
 import QRCode from 'qrcode';
 
@@ -64,8 +67,7 @@ export async function handler(event) {
       statusCode: 200,
       body: JSON.stringify({
         url: doc.url,
-        qrCode,
-        expiresAt: doc.createdAt.getTime() + 3*24*60*60*1000
+        qrCode
       }),
       headers
     };

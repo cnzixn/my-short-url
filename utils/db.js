@@ -18,10 +18,10 @@ export async function connectToDatabase() {
     // 连接数据库
     await client.connect();
     const db = client.db('shortener'); // 替换为实际数据库名
-    await db.collection('links').createIndex(
-      { createdAt: 1 },
-      { expireAfterSeconds: 1 * 24 * 60 * 60 }
-    );
+    // await db.collection('links').createIndex(
+      // { createdAt: 1 },
+      // { expireAfterSeconds: 1 * 24 * 60 * 60 }
+    // );
     return { db, client };
   } catch (error) {
     console.error('数据库连接失败:', error.stack);
