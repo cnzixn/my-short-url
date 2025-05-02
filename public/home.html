@@ -6,17 +6,20 @@
     <title>618.SH</title>
     <link rel="stylesheet" href="/main.css">
     <link rel="stylesheet" href="/home.css">
+    <link rel="stylesheet" href="./main.css">
+    <link rel="stylesheet" href="./home.css">
 </head>
 <body>
     <div class="container">
-      <h1>批量短链生成</h1>
+      <h1>短链生成</h1>
       
-      <textarea id="batchInput" placeholder="
-    可直接输入链接，可上传 txt 文件。
-    每行一个链接，可空格加上自定义短链 key
+      <textarea id="batchInput" placeholder="每行一个链接，可空格加上自定义短链
     https://pvp.qq.com    wzry
     https://baidu.com    baidu
-    免责：本网站不提供任何内容，仅通过 Js 代码``` window.location.href = data.url ``` 跳转到用户指定的链接。"></textarea>
+    
+免责：本站不提供代理加速服务，仅通过 Js 代码 window.location.href 实现链接跳转。
+
+联系：如有问题，请发邮件到 cnzixn@qq.com 。"></textarea>
 
       <input type="file" id="fileUpload" accept=".txt" />
     
